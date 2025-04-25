@@ -24,7 +24,7 @@ import notificationRoutes from './routes/notification.routes.js'
 
 //use routes
 app.use('/api/v1/user', userRoutes)
-app.use('api/v1/notification',notificationRoutes)
+app.use('/api/v1/notification',notificationRoutes)
 
 
 

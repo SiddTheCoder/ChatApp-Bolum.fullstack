@@ -12,7 +12,8 @@ export const getAllNotifications = asyncHandler(async (req, res) => {
 
   const notifications = await Notification.find(filter)
     .populate('sender')
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
+    .select('-rereshToken')
 
   return res
     .status(200)

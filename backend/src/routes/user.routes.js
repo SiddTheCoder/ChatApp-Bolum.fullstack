@@ -7,6 +7,9 @@ import {
   getCurrentUser,
   logoutUser,
   getAllUsers,
+   addFriendRequest,
+  cancelFriendRequest,
+    acceptFriendRequest
 } from '../controllers/user.controller.js'
 
 
@@ -21,7 +24,12 @@ router.route('/get-all-users').get(getAllUsers)
 
 //secured routes
 router.route('/logout-user').get(verifyJWT,logoutUser)
-router.route('/get-current-user').get(verifyJWT,getCurrentUser)
+router.route('/get-current-user').get(verifyJWT, getCurrentUser)
+
+//friend request (secured routes)
+router.route('/add-friend-request').post(verifyJWT,addFriendRequest)
+router.route('/cancel-friend-request').post(verifyJWT, cancelFriendRequest)
+router.route('/accept-friend-request').post(verifyJWT,acceptFriendRequest)
 
 
 //for private route check

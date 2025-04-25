@@ -22,7 +22,11 @@ const notificationSchema = new mongoose.Schema({
   seen: {
     type: Boolean,
     default : false
+  },
+  status: {
+    type: String,
+    enum : ["accepted","rejected"]
   }
-})
+}, {timestamps:true})
 
 export const Notification = mongoose.model("Notification", notificationSchema);

@@ -67,10 +67,12 @@ const userSchema = new mongoose.Schema({
       ref: 'User',
     }
   ],
-  alreadyRequestSent: {
-    type: Boolean,
-    default : false
-  },
+  alreadyRequestSent: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    }
+  ],
   refreshToken: {
     type: String,
   }

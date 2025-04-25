@@ -182,14 +182,66 @@ const getAllUsers = asyncHandler(async (req, res) => {
     ))
 })
 
-const updateFriendRequestState = asyncHandler(async (req, res) => {
+const addFriendRequest = asyncHandler(async (req, res) => {
 
-  const { requestGetterId, status } = req.query
+  const { requestGetterId } = req.query
+  const user = req.user?._id
   
-  if (!status) {
-    throw new ApiError(400,'Status in Boolean is required for updating the requestsent button state')
+  if (!requestGetterId) {
+    throw new ApiError(400,'Request Getter ID is required for updating the button state')
   }
 
+  const requestGetterUser = await User.findByIdAndUpdate(
+    requestGetterId,
+    { $push: { alreadyRequestSent: user } },
+    { new: true }
+  )
+
+  return res.status(200).json(new ApiResponse(200,requestGetterUser,'Friend-request state added succesfully'))
+
+})
+
+const cancelFriendRequest = asyncHandler(async (req, res) => {
+
+  const { requestGetterId } = req.query
+  const user = req.user?._id
+  
+  if (!requestGetterId) {
+    throw new ApiError(400,'Request Getter ID is required for updating the button state')
+  }
+
+  const requestGetterUser = await User.findByIdAndUpdate(
+    requestGetterId,
+    { $pull: { alreadyRequestSent: user } },
+    { new: true }
+  )
+
+  return res.status(200).json(new ApiResponse(200,requestGetterUser,'Friend-request state added succesfully'))
+
+})
+
+const acceptFriendRequest = asyncHandler(async (req, res) => {
+  const { anotheruserId } = req.query
+
+  if (!anotheruserId) {
+    throw new ApiError(400, 'Another user ID is required')
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+       $addToSet : {friends : anotheruserId} 
+    },
+    { new: true }
+  )
+  
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, 'Friend added succesfully'))
+})
+
+const rejectFriendRequest = asyncHandler(async (req, res) => {
+  
 })
 
 export {
@@ -198,5 +250,9 @@ export {
   loginUser,
   logoutUser,
   getCurrentUser,
-  getAllUsers
+  getAllUsers,
+  addFriendRequest,
+  cancelFriendRequest,
+  acceptFriendRequest,
+  rejectFriendRequest,
 }

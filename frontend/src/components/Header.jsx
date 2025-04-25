@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import { Settings, Search, Bell } from 'lucide-react';
 import { useSocket } from '../context/SocketContext'
 import { useAuth } from '../hooks/useAuth';
+import ShowNotifications from './ShowNotifications';
 
 function Header() {
 
@@ -11,7 +11,8 @@ function Header() {
   
   const [notificationCount, setNotificationCount] = useState(0)
   const [userGeneratedTextImg, setUserGeneratedTextImg] = useState(null)
-  
+  const [showNotifications,setShowNotification] = useState(false)
+
   // FORM CONTEXT API HOOK
   const { socket } = useSocket()
   // FROM HOOK
@@ -38,6 +39,16 @@ function Header() {
       console.log('Friend Request cancelled')
       setNotificationCount((prev) => prev-1)
     })
+
+    socket?.on('friend-request-accepted', (data) => {
+      console.log('Friend Request accepted from', data)
+      setNotificationCount((prev) => prev+1)
+    })
+
+    socket?.on('rejected-friend-request', () => {
+      console.log('Friend Request Rejected')
+      setNotificationCount((prev) => prev+1)
+    })
   } , [currentUser])
 
  
@@ -53,22 +64,29 @@ function Header() {
   }, [currentUser])
   
 
+  const toggleShowNotifications = () => {
+    console.log('Trying to toggle the Notifcation state')
+    setShowNotification(prev => !prev)
+    console.log('Notifications state updated')
+  }
+
   return (
     <header className='h-12 bg-purple-600/60 w-full flex justify-between items-center pl-10 px-2'>
       <div className='flex gap-1 items-center justify-center cursor-pointer hover:bg-purple-950/50 py-1 px-4 rounded '>Search <Search className='relative top-[0.5px] hover:animate-bounce' size={20} strokeWidth={1.75} absoluteStrokeWidth /></div>
 
       <div className='flex justify-around items-center gap-2'>
         <div><Settings className='hover:animate-spin cursor-pointer hover:scale-[1.2] transition-all duration-150 ease-in' /></div>
-        <div className='relative'>
+        <div className='relative' onClick={toggleShowNotifications}>
           <Bell className='cursor-pointer hover:scale-[1.2] hover:z-10 transition-all duration-150 ease-in ml-2 mr-2' />
           {notificationCount > 0 && (
-              <span
+            <span
                 className={`absolute -top-1 right-0 bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center text-xs font-bold   transition-all duration-300 ease-out 
                 ${animateNotif ? 'scale-125 bg-red-600' : 'scale-100'}`}
               >
                 {notificationCount}
               </span>
           )}
+          {showNotifications && <ShowNotifications isOpen={showNotifications} closeModel={toggleShowNotifications} />}
         </div>
 
         <div className='flex justify-between items-center gap-2 pr-2 cursor-pointer bg-purple-600/30 hover:bg-purple-600 py-1 px-3 rounded transition-all duration-100 ease-in'>

@@ -20,19 +20,13 @@ export function setupSocket(io) {
       if (unseenNotifications.length > 0) {
         socket.emit('unseen-notifications')
       }
+
     })
 
     // send friendRequest
     socket.on('send-friend-request', async ({ senderId, receiverId }) => {
-    console.log(`Friend request from ${senderId} to ${receiverId}`);
-      
+       
       try {
-        // create friend-request
-        const newFriendRequest = await FriendRequest.create({
-          sender : senderId,
-          receiver: receiverId,
-        })
-
         //initiation the notification model for DB
         const notification = await Notification.create({
           type : 'friend-request',
@@ -53,12 +47,6 @@ export function setupSocket(io) {
           {new : true}
         )
 
-        // //  Mark "alreadyRequestSent" for the sender
-        // await User.findByIdAndUpdate(senderId, {
-        //   $set: { alreadyRequestSent: true },
-        // });
-
-
       } catch (error) {
         console.log('Error occured while handling DataBase inside the send-friend-request socket event', error)
         return;
@@ -76,29 +64,23 @@ export function setupSocket(io) {
 
     })
 
+
+    // cancel friend request
    socket.on('cancel-friend-request', async ({ senderId, receiverId }) => {
       try {
-        // Step 1: Delete the friend request
-        const frResult = await FriendRequest.deleteMany({ sender: senderId, receiver: receiverId });
-
-        // Step 2: Find the notification
+        // find nitification
         const notification = await Notification.findOneAndDelete({
           sender: senderId,
           receiver: receiverId,
           type: 'friend-request',
         });
 
-        // Step 3: Remove the notification from User.notifications array
+        // Remove the notification from User.notifications array
         if (notification) {
           await User.findByIdAndUpdate(receiverId, {
             $pull: { notifications: notification._id },
           });
         }
-
-        // //  Mark "alreadyRequestSent" for the sender
-        // await User.findByIdAndUpdate(senderId, {
-        //   $set: { alreadyRequestSent: false },
-        // });
 
         // Step 4: Notify the receiver
         const receiverSocketId = connectedUsers.get(receiverId);
@@ -120,6 +102,67 @@ export function setupSocket(io) {
       }
     });
 
+    //accept friend request
+    socket.on('accept-friend-request', async ({ senderId, receiverId }) => {
+      try {
+        const notification = await Notification.create({
+          type : 'message',
+          sender : senderId,
+          receiver: receiverId,
+          seen: false,
+          message : 'Your Friend Request Have been accepted'
+        })
+        
+        if (!notification) {
+          throw new ApiError(500,'Error occured while creating the notification')
+        }
+
+        await User.findByIdAndUpdate(
+          receiverId,
+          { $push: { notifications: notification._id } },
+          {new : true}
+        )
+
+      } catch (err) {
+        console.log('Error occured while acceptong friend request', err)
+      }
+
+      const receiverSocketId = connectedUsers.get(receiverId)
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit('friend-request-accepted', {
+          from : senderId
+        })
+      }
+    })
+
+    //reject friend request
+    socket.on('reject-friend-request', async ({ senderId, receiverId }) => {
+      try {
+        const notification = await Notification.create({
+          type : 'message',
+          sender : senderId,
+          receiver: receiverId,
+          seen: false,
+          message : 'Your Friend Request Have been rejected'
+        })
+
+         await User.findByIdAndUpdate(
+          receiverId,
+          { $push: { notifications: notification._id } },
+          {new : true}
+        )
+
+      } catch (err) {
+        console.log('Error occured while rejecting the frnd request', err)
+      }
+
+      const receiverSocketId = connectedUsers.get(receiverId)
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit('rejected-friend-request', {
+          from : senderId
+        })
+      }
+    })
     
 
     // disconnect event
