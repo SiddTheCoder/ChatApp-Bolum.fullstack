@@ -9,12 +9,11 @@ function ShowNotifications({ closeModel, isOpen }) {
   const currentUser = useAuth()
 
   const [notifications, setNotications] = useState([])
-  const [isBtnDisable,setIsBtnDisable] = useState(false)
+
   
   const getAllNotifications = async () => {
    try {
      const response = await axios.get('/api/v1/notification/get-user-all-notifications', { withCredentials: true })
-     console.log('Notification Fetched', response.data.data)
      setNotications(response.data.data)
    } catch (error) {
     console.log('Error occured', error)
@@ -31,7 +30,6 @@ function ShowNotifications({ closeModel, isOpen }) {
         senderId: currentUser?._id ,
         receiverId: notification?.sender?._id
       })
-      console.log('Friend request accpted inside the socket')
     }
     
     //database handling
@@ -44,7 +42,8 @@ function ShowNotifications({ closeModel, isOpen }) {
     } catch (error) {
       console.log('Error occured while handling the database',error)
     }
-    setIsBtnDisable(true)
+
+    await updateNotificationStatus(notification)
   }
 
   const handleFriendRequestReject = async (notification) => {
@@ -53,9 +52,16 @@ function ShowNotifications({ closeModel, isOpen }) {
         senderId: currentUser?._id ,
         receiverId: notification?.sender?._id
       })
-      console.log('Friend request rejected inside the socket')
     }
-    setIsBtnDisable(true)
+    await updateNotificationStatus(notification)
+  }
+
+  const updateNotificationStatus = async (notification) => {
+    console.log("Trying to update the notification status", notification)
+    const response = await axios.post(`/api/v1/notification/update-notification-status?notificationId=${notification?._id}`, {
+      withCredentials : true
+    })
+    console.log('Notification status updated', response.data.data)
   }
 
   return (
@@ -68,10 +74,10 @@ function ShowNotifications({ closeModel, isOpen }) {
             return (
               <div
                 key={notification._id}
-                className='w-full h-18 py-1 bg-slate-200 rounded-md flex gap-2'
+                className='w-full h-18 py-1 bg-slate-200 rounded-md flex justify-between gap-2'
               >
-                <div className='h-full w-[20%] flex justify-center items-center'>
-                  <div className='h-10 w-10 rounded-full bg-purple-950/90'></div>
+                <div className='h-full w-[30%] flex justify-center items-center'>
+                  <div className='h-12 w-12 rounded-full bg-purple-950/90'></div>
                 </div>
 
                 <div className='flex flex-col w-full h-full items-center justify-around'>
@@ -80,14 +86,14 @@ function ShowNotifications({ closeModel, isOpen }) {
                   </div>
                   <div className='w-full flex gap-0 justify-around ml-20 mr-20'>
                     <button
-                      disabled={isBtnDisable}
+                      disabled={notification?.status == 'accepted'? true : false}
                       onClick={() => handleFriendRequestReject(notification)}
-                      className='text-sm hover:bg-purple-950/60 bg-purple-950/80 text-white px-2 py-[2px] cursor-pointer rounded-sm'
+                      className='text-sm hover:bg-purple-950/60 bg-purple-950/80 text-white px-2 py-[4px] cursor-pointer rounded-sm'
                     >
                       Reject
                     </button>
                     <button
-                      disabled={isBtnDisable}
+                      disabled={notification?.status == 'accepted'? true : false}
                       onClick={() => handleFriendRequestAccept(notification)}
                       className='text-sm hover:bg-purple-950/60 bg-purple-950/80 text-white px-2 py-[2px] cursor-pointer rounded-sm'
                     >
@@ -101,9 +107,12 @@ function ShowNotifications({ closeModel, isOpen }) {
             return (
               <div
                 key={notification._id}
-                className='w-full h-18 flex text-center items-center py-1 bg-slate-300 rounded-md  gap-2'
+                className='w-full h-18 flex justify-between items-center py-1 bg-slate-300 rounded-md  gap-2'
               >
-                <span className='w-full'>
+                <div className='w-[30%] h-full flex justify-center items-center'>
+                  <div className='h-12 w-12 rounded-full bg-purple-950'></div>
+                </div>
+                <span className='w-full' aria-disabled>
                   {notification?.message} from {notification.sender?.fullname}
                 </span>
               </div>

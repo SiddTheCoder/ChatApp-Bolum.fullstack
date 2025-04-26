@@ -33,7 +33,8 @@ export function setupSocket(io) {
           sender : senderId,
           receiver: receiverId,
           seen: false,
-          message : 'You have new Friend Request'
+          message : 'You have new Friend Request',
+          
         })
 
         if (!notification) {
@@ -74,6 +75,7 @@ export function setupSocket(io) {
           receiver: receiverId,
           type: 'friend-request',
         });
+
 
         // Remove the notification from User.notifications array
         if (notification) {
@@ -130,7 +132,8 @@ export function setupSocket(io) {
       const receiverSocketId = connectedUsers.get(receiverId)
       if (receiverSocketId) {
         io.to(receiverSocketId).emit('friend-request-accepted', {
-          from : senderId
+          from: senderId,
+          to : receiverId
         })
       }
     })
@@ -151,6 +154,13 @@ export function setupSocket(io) {
           { $push: { notifications: notification._id } },
           {new : true}
         )
+
+        await User.findByIdAndUpdate(
+          senderId,
+          { $pull: { alreadyRequestSent: receiverId } },
+          { new: true }
+        )
+        
 
       } catch (err) {
         console.log('Error occured while rejecting the frnd request', err)

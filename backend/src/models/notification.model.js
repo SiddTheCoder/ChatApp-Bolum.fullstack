@@ -25,7 +25,8 @@ const notificationSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum : ["accepted","rejected"]
+    enum: ["accepted", "rejected"],
+    default : 'rejected'
   }
 }, {timestamps:true})
 

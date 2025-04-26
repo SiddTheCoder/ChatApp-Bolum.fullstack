@@ -227,21 +227,39 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Another user ID is required')
   }
 
-  const user = await User.findByIdAndUpdate(
+  await User.findByIdAndUpdate(
     req.user?._id,
     {
        $addToSet : {friends : anotheruserId} 
     },
     { new: true }
   )
+
+  await User.findByIdAndUpdate(
+    anotheruserId,
+    { $addToSet: { friends: req.user?._id } },
+    {new : true}
+  )
   
   return res
     .status(200)
-    .json(new ApiResponse(200, user, 'Friend added succesfully'))
+    .json(new ApiResponse(200, 'Friend added succesfully in both users'))
 })
 
 const rejectFriendRequest = asyncHandler(async (req, res) => {
-  
+  const { anotheruserId } = req.query
+
+  if (!anotheruserId) {
+    throw new ApiError(400,'Another user ID is required')
+  }
+
+  await User.findByIdAndUpdate(
+    anotheruserId,
+    { $pull: { alreadyRequestSent: req.user?._id } },
+    { new: true }
+  )
+
+  return res.status(200).json(new ApiResponse(200,'Friend Request Rejected Succesfully'))
 })
 
 export {

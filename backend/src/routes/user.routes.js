@@ -9,7 +9,8 @@ import {
   getAllUsers,
    addFriendRequest,
   cancelFriendRequest,
-    acceptFriendRequest
+  acceptFriendRequest,
+    rejectFriendRequest
 } from '../controllers/user.controller.js'
 
 
@@ -30,6 +31,7 @@ router.route('/get-current-user').get(verifyJWT, getCurrentUser)
 router.route('/add-friend-request').post(verifyJWT,addFriendRequest)
 router.route('/cancel-friend-request').post(verifyJWT, cancelFriendRequest)
 router.route('/accept-friend-request').post(verifyJWT,acceptFriendRequest)
+router.route('/reject-friend-request').post(verifyJWT,rejectFriendRequest)
 
 
 //for private route check
