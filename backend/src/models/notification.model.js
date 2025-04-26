@@ -27,6 +27,11 @@ const notificationSchema = new mongoose.Schema({
     type: String,
     enum: ["accepted", "rejected"],
     default : 'rejected'
+  },
+  friendStatus: {
+    type: String,
+    enum: ['null', 'accepted', 'rejected'],
+    default : 'null'
   }
 }, {timestamps:true})
 

@@ -4,23 +4,24 @@ import { Notification } from '../models/notification.model.js'
 import { ApiError } from '../utils/ApiError.js';
 
 export const getAllNotifications = asyncHandler(async (req, res) => {
-  const user = req.user?._id;
-  const { onlyUnseen } = req.query;
+  // Step 1: Fetch all notifications
+  const notifications = await Notification.find({ receiver: req.user._id }).sort({ createdAt: -1 }).populate('sender', '-password -refreshToken')
 
-  const filter = onlyUnseen
-    ? { receiver: user, seen: false }
-    : { receiver: user };
+  // Step 2: Find IDs of unseen notifications
+  const unseenNotificationIds = notifications
+    .filter(notification => notification.seen === false)
+    .map(notification => notification._id);
 
-  const notifications = await Notification.find(filter)
-    .populate('sender')
-    .sort({ createdAt: -1 })
-    .select('-rereshToken')
+  // Step 3: Update them to seen
+  await Notification.updateMany(
+    { _id: { $in: unseenNotificationIds } },
+    { $set: { seen: true } }
+  );
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, notifications, 'Notifications fetched successfully'));
-  
+  // Step 4: Send the ORIGINAL notifications (not updated)
+  return res.status(200).json(new ApiResponse(200, notifications, 'Notifications fetched'));
 });
+
 
 export const updateNotificationStatus = asyncHandler(async (req, res) => {
   const { notificationId } = req.query
@@ -40,9 +41,15 @@ export const updateNotificationStatus = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200,notification,'Notification status updated'))
 })
 
-export const getUnSeenNotifications = asyncHandler(async (req, res) => {
+export const getUnSeenNotificationsLength = asyncHandler(async (req, res) => {
   const newUnSeenNotifications = await Notification.find({
     receiver: req.user?._id,
     seen : false
   })
+  
+  if (newUnSeenNotifications.length <= 0) {
+    return res.status(200).json(new ApiResponse(200,[],'No Unseen Notification Present'))
+  } else {
+    return res.status(200).json(new ApiResponse(200,newUnSeenNotifications.length,'Unseen Notification Fetched'))
+  }
 })

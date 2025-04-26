@@ -92,9 +92,9 @@ export function setupSocket(io) {
         }
 
         // Logging for debugging
-        console.log('🗑️ FriendRequest deleted count:', frResult.deletedCount);
+        console.log('🗑️ FriendRequest deleted count:',);
         if (notification) {
-          console.log('🗑️ Notification deleted with ID:', notification._id);
+          console.log('🗑️ Notification deleted with ID:',);
         } else {
           console.log('⚠️ No notification found to delete');
         }
@@ -105,14 +105,15 @@ export function setupSocket(io) {
     });
 
     //accept friend request
-    socket.on('accept-friend-request', async ({ senderId, receiverId }) => {
+    socket.on('accept-friend-request', async ({ senderId, receiverId, notificationId }) => {
+      console.log('Receiver Id ---------------,', receiverId)
       try {
         const notification = await Notification.create({
           type : 'message',
           sender : senderId,
           receiver: receiverId,
           seen: false,
-          message : 'Your Friend Request Have been accepted'
+          message : 'accepted your friend proposal'
         })
         
         if (!notification) {
@@ -123,6 +124,12 @@ export function setupSocket(io) {
           receiverId,
           { $push: { notifications: notification._id } },
           {new : true}
+        )
+
+        await Notification.findByIdAndUpdate(
+          notificationId,
+          { $set: { friendStatus: 'accepted' } },
+          { new: true }
         )
 
       } catch (err) {
@@ -139,14 +146,14 @@ export function setupSocket(io) {
     })
 
     //reject friend request
-    socket.on('reject-friend-request', async ({ senderId, receiverId }) => {
+    socket.on('reject-friend-request', async ({ senderId, receiverId, notificationId }) => {
       try {
         const notification = await Notification.create({
           type : 'message',
           sender : senderId,
           receiver: receiverId,
           seen: false,
-          message : 'Your Friend Request Have been rejected'
+          message : 'rejected your friend proposal'
         })
 
          await User.findByIdAndUpdate(
@@ -161,6 +168,11 @@ export function setupSocket(io) {
           { new: true }
         )
         
+        await Notification.findByIdAndUpdate(
+          notificationId,
+          { $set: { friendStatus: 'rejected' } },
+          { new: true }
+        )
 
       } catch (err) {
         console.log('Error occured while rejecting the frnd request', err)

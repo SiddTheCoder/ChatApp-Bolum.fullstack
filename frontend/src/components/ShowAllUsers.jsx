@@ -95,8 +95,9 @@ function ShowAllUsers() {
         cancelFriendRequest(user)
         setTimeout(() => {
           getAllUsers()
-        }, 2000)
-      } else {
+        }, 4000)
+      }
+      else {
         newSet.add(user._id)
         sendFriendRequest(user)
         setTimeout(() => {

@@ -3,6 +3,7 @@ import { Settings, Search, Bell } from 'lucide-react';
 import { useSocket } from '../context/SocketContext'
 import { useAuth } from '../hooks/useAuth';
 import ShowNotifications from './ShowNotifications';
+import axios from 'axios'
 
 function Header() {
 
@@ -24,14 +25,21 @@ function Header() {
   useEffect(() => {
   if (notificationCount > 0) {
     setAnimateNotif(true);
-    const timer = setTimeout(() => setAnimateNotif(false), 300); // reset after 300ms
+    const timer = setTimeout(() => setAnimateNotif(false), 300); 
     return () => clearTimeout(timer);
   }
   }, [notificationCount]);
   
 
+  const getUnSeenNotifications = async () => {
+    const response = await axios.get('/api/v1/notification/get-unseen-notifications-count', {
+      withcredentials : true
+    })
+    setNotificationCount(response.data.data)
+  }
+
   useEffect(() => {
-    setNotificationCount(currentUser?.notifications?.length)
+    getUnSeenNotifications()
     socket?.on('friend-request-received', () => {
       setNotificationCount((prev) => prev+1)
     })
@@ -65,10 +73,28 @@ function Header() {
   
 
   const toggleShowNotifications = () => {
-    console.log('Trying to toggle the Notifcation state')
     setShowNotification(prev => !prev)
-    console.log('Notifications state updated')
+    getUnSeenNotifications()
   }
+
+  useEffect(() => {
+  const originalTitle = document.title;
+
+  if (notificationCount > 0) {
+    // Change title
+    document.title = `🔔 (${notificationCount}) New Notifications!`;
+
+    // After 3 seconds, restore
+    const timeout = setTimeout(() => {
+      document.title = originalTitle;
+    }, 3000);
+
+    // Clean up
+    return () => clearTimeout(timeout);
+  }
+}, [notificationCount]);
+
+
 
   return (
     <header className='h-12 bg-purple-600/60 w-full flex justify-between items-center pl-10 px-2'>
