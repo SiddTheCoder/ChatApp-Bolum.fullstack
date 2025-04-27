@@ -134,6 +134,7 @@ function ShowAllUsers() {
 
   return (
     <>
+      <div className='h-full w-full overflow-y-scroll flex flex-wrap'>
       {users?.map((user) => (
         <div key={user._id} className='flex flex-wrap gap-5 p-3 mb-10'>
           <div className='h-78 w-86 bg-slate-300 rounded-md shadow-lg flex flex-col items-center gap-3 p-2'>
@@ -169,6 +170,7 @@ function ShowAllUsers() {
           </div>
         </div>
       ))}
+      </div>
     </>
   )
 }

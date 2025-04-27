@@ -17,7 +17,9 @@ function App() {
 
         {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
-          <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<Home />} >
+            <Route path="chat/:friendId" element={<ChatApp />} />
+            </Route>
         </Route>
       </Routes>
     </BrowserRouter>

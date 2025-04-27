@@ -7,10 +7,12 @@ import {
   getCurrentUser,
   logoutUser,
   getAllUsers,
-   addFriendRequest,
+  addFriendRequest,
   cancelFriendRequest,
   acceptFriendRequest,
-    rejectFriendRequest
+  rejectFriendRequest,
+  getUserAllFriends,
+  getUserById,
 } from '../controllers/user.controller.js'
 
 
@@ -21,11 +23,13 @@ const router = Router()
 router.route('/register-user').post(upload.single('avatar'),registerUser)
 router.route('/login-user').post(loginUser)
 router.route('/get-all-users').get(getAllUsers)
+router.route('/get-user-by-id').get(getUserById)
 
 
 //secured routes
 router.route('/logout-user').get(verifyJWT,logoutUser)
 router.route('/get-current-user').get(verifyJWT, getCurrentUser)
+router.route('/get-user-all-freinds').get(verifyJWT,getUserAllFriends)
 
 //friend request (secured routes)
 router.route('/add-friend-request').post(verifyJWT,addFriendRequest)

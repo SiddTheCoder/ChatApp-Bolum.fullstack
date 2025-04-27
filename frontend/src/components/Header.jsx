@@ -97,7 +97,7 @@ function Header() {
 
 
   return (
-    <header className='h-12 bg-purple-600/60 w-full flex justify-between items-center pl-10 px-2'>
+    <header className='h-12 bg-white/80 text-black w-full flex justify-between items-center pl-10 px-2 border-b-1 border-black'>
       <div className='flex gap-1 items-center justify-center cursor-pointer hover:bg-purple-950/50 py-1 px-4 rounded '>Search <Search className='relative top-[0.5px] hover:animate-bounce' size={20} strokeWidth={1.75} absoluteStrokeWidth /></div>
 
       <div className='flex justify-around items-center gap-2'>

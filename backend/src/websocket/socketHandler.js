@@ -2,6 +2,8 @@ import { FriendRequest } from '../models/friendRequest.model.js';
 import { Notification } from '../models/notification.model.js';
 import { User } from '../models/user.model.js';
 import { ApiError } from '../utils/ApiError.js';
+import { Chat } from '../models/chat.model.js';
+import { ChatMessage } from '../models/chatMessage.model.js';
 
 const connectedUsers = new Map(); // userId => socket.id
 
@@ -14,12 +16,6 @@ export function setupSocket(io) {
     socket.on('register-user',async (userId) => {
       connectedUsers.set(userId, socket.id)
       console.log(`User ${userId} registered with socket ID: ${socket.id}`);
-
-      const unseenNotifications = await Notification.find({ receiverId: userId, seen: false })
-      
-      if (unseenNotifications.length > 0) {
-        socket.emit('unseen-notifications')
-      }
 
     })
 
@@ -64,7 +60,6 @@ export function setupSocket(io) {
       }
 
     })
-
 
     // cancel friend request
    socket.on('cancel-friend-request', async ({ senderId, receiverId }) => {
@@ -186,6 +181,48 @@ export function setupSocket(io) {
       }
     })
     
+    // send message
+    socket.on('send-message', async ({senderId,receiverId,content}) => {
+      try {
+        
+        // Step 1: Find existing chat between these two users
+        let chat = await Chat.findOne({
+          isGroupChat: false,
+          members: {
+            $all: [senderId, receiverId],
+            $size: 2
+          },
+        });
+
+        // Step 2: If chat doesn't exist, create a new one
+        if (!chat) {
+          chat = await Chat.create({
+            members: [senderId, receiverId],
+          });
+        }
+
+        // Step 3: Create the message linked to the chat
+        const message = await ChatMessage.create({
+          sender: senderId,
+          content,
+          chat: chat._id,
+        });
+        console.log('Message Created =============== ',message)
+        // Step 4: Update lastMessage in Chat
+        chat.lastMessage = message._id;
+        chat.lastUpdated = Date.now();
+        await chat.save();
+
+  
+
+        const receiverSocketId = connectedUsers.get(receiverId)
+        socket.emit('message-sent', message); // Notify sender the message was sent
+        socket.to(receiverSocketId).emit('new-message', message); // Notify receiver
+
+      } catch (err) {
+        console.log('Error while sending message', err)
+      }
+    })
 
     // disconnect event
     socket.on('disconnect', () => {

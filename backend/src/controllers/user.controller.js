@@ -237,7 +237,10 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
 
   await User.findByIdAndUpdate(
     anotheruserId,
-    { $addToSet: { friends: req.user?._id } },
+    {
+      $addToSet: { friends: req.user?._id },
+      $pull: { alreadyRequestSent: req.user?._id }
+    },
     {new : true}
   )
   
@@ -262,6 +265,29 @@ const rejectFriendRequest = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200,'Friend Request Rejected Succesfully'))
 })
 
+const getUserAllFriends = asyncHandler(async (req, res) => {
+  const friends = await User.findById(req.user?._id).select('-password -refreshToken').populate('friends','-password -refreshToken').sort({ createdAt: -1 })
+  
+  if (friends.length <= 0) {
+    return res.status(200).json(new ApiResponse(200, [], 'Friends Fetched Successfully'))
+
+  } else {
+    return res.status(200).json(new ApiResponse(200, friends, 'Friends Fteched Succesfully'))
+  }
+})
+
+const getUserById = asyncHandler(async (req, res) => {
+  const { userId } = req.query
+  
+  if (!userId) {
+    throw new ApiError(400,'userId is required')
+  }
+
+  const user = await User.findById(userId).select('-refreshToken -password')
+
+  return res.status(200).json(new ApiResponse(200,user,'user Fteched Succesfully'))
+})
+
 export {
   generateAccessAndRefreshToken,
   registerUser,
@@ -273,4 +299,6 @@ export {
   cancelFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
+  getUserAllFriends,
+  getUserById,
 }
