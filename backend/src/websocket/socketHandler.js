@@ -206,8 +206,9 @@ export function setupSocket(io) {
           sender: senderId,
           content,
           chat: chat._id,
+          seen : false
         });
-        console.log('Message Created =============== ',message)
+    
         // Step 4: Update lastMessage in Chat
         chat.lastMessage = message._id;
         chat.lastUpdated = Date.now();
@@ -216,8 +217,15 @@ export function setupSocket(io) {
   
 
         const receiverSocketId = connectedUsers.get(receiverId)
-        socket.emit('message-sent', message); // Notify sender the message was sent
-        socket.to(receiverSocketId).emit('new-message', message); // Notify receiver
+        console.log('Receiver ID is ---------->>>>>>>>', receiverSocketId)
+        socket.emit('message-sent', {
+          message,
+          chatId: chat._id
+        }); // Notify sender the message was sent
+        socket.to(receiverSocketId).emit('new-message', {
+          message,
+          chatId: chat._id
+        }); // Notify receiver
 
       } catch (err) {
         console.log('Error while sending message', err)

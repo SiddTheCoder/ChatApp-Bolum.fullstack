@@ -3,7 +3,8 @@ import { ApiError } from '../utils/ApiError.js'
 import { uploadOnCloudinary } from '../utils/Cloudinary.js'
 import { User } from '../models/user.model.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
-
+import { Chat } from '../models/chat.model.js'
+import { ChatMessage } from '../models/chatMessage.model.js'
 
 
 const generateAccessAndRefreshToken = async (userId) => {
@@ -70,7 +71,8 @@ const registerUser = asyncHandler(async (req, res) => {
     const options = {
       httpOnly : true,
       secure: true,
-      sameSite: "Strict"
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
   }
 
   return res
@@ -112,13 +114,12 @@ const loginUser = asyncHandler(async (req, res) => {
 
  // cookie settings
     const options = {
-        httpOnly : true,
+      httpOnly : true,
       secure: true,
-      sameSite: "Strict"
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
   }
   
-
-
   return res
     .status(200)
     .cookie('refreshToken', refreshToken, options)
@@ -288,6 +289,48 @@ const getUserById = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200,user,'user Fteched Succesfully'))
 })
 
+const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user?._id)
+    .populate('friends', '-password')
+    .lean();
+
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+
+  // Fetch all 1-to-1 chats where current user is a member
+  const chats = await Chat.find({
+    isGroupChat: false,
+    members: req.user?._id,
+  })
+    .populate({
+      path: 'lastMessage',
+      populate: { path: 'sender', select: 'name profilePic' },
+    })
+    .lean();
+
+  // Create a map { friendId: lastMessage }
+  const friendLatestMessageMap = {};
+
+  chats.forEach(chat => {
+    const friendId = chat.members.find(id => id.toString() !== req.user._id.toString());
+    if (friendId) {
+      friendLatestMessageMap[friendId.toString()] = chat.lastMessage;
+    }
+  });
+
+  // Attach lastMessage to each friend
+  const friendsWithLatestMessage = user.friends.map(friend => {
+    return {
+      ...friend,
+      lastMessage: friendLatestMessageMap[friend._id.toString()] || null,
+    };
+  });
+
+  res.status(200).json(friendsWithLatestMessage);
+});
+
+
 export {
   generateAccessAndRefreshToken,
   registerUser,
@@ -301,4 +344,5 @@ export {
   rejectFriendRequest,
   getUserAllFriends,
   getUserById,
+  getUserFriendsWithLatestMessage
 }

@@ -73,6 +73,10 @@ const userSchema = new mongoose.Schema({
       ref: 'User',
     }
   ],
+  verified: {
+    type: Boolean,
+    default: false
+  },
   refreshToken: {
     type: String,
   }

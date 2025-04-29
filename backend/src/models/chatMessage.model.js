@@ -22,6 +22,10 @@ const chatMessageSchema = new mongoose.Schema(
         ref: 'User',
       }
     ],
+    seen: {
+      type: Boolean,
+      default : false
+    }
   },
   { timestamps: true }
 );

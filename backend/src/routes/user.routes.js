@@ -13,6 +13,7 @@ import {
   rejectFriendRequest,
   getUserAllFriends,
   getUserById,
+  getUserFriendsWithLatestMessage
 } from '../controllers/user.controller.js'
 
 
@@ -29,7 +30,8 @@ router.route('/get-user-by-id').get(getUserById)
 //secured routes
 router.route('/logout-user').get(verifyJWT,logoutUser)
 router.route('/get-current-user').get(verifyJWT, getCurrentUser)
-router.route('/get-user-all-freinds').get(verifyJWT,getUserAllFriends)
+router.route('/get-user-all-freinds').get(verifyJWT, getUserAllFriends)
+router.route('/get-user-friends-withLatest-messages').get(verifyJWT,getUserFriendsWithLatestMessage)
 
 //friend request (secured routes)
 router.route('/add-friend-request').post(verifyJWT,addFriendRequest)

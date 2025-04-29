@@ -14,6 +14,7 @@ function ShowNotifications({ closeModel, isOpen }) {
    try {
      const response = await axios.get('/api/v1/notification/get-user-all-notifications', { withCredentials: true })
      setNotications(response.data.data)
+     console.log('All Notification',response.data.data)
     
    } catch (error) {
     console.log('Error occured', error)
@@ -82,7 +83,9 @@ function ShowNotifications({ closeModel, isOpen }) {
               >
                 <div className='h-full w-[30%] flex justify-center items-center ml-3'>
                   <div className="relative h-12 w-12">
-                    <div className="h-full w-full rounded-full bg-purple-950/90"></div>
+                    <div className="h-full w-full rounded-full bg-purple-950/90 overflow-hidden">
+                      <img src={notification.sender?.avatar} alt="" />
+                    </div>
 
                     {/* New Badge */}
                     {!notification.seen && (
@@ -129,7 +132,9 @@ function ShowNotifications({ closeModel, isOpen }) {
                 className={`${!notification?.seen  ? "bg-purple-800 text-white " : "bg-slate-300 text-black"} w-full h-18 flex justify-between items-center py-1 bg-slate-300 rounded-md  gap-2`}
               >
                 <div className='w-[30%] h-full flex justify-center items-center'>
-                  <div className='h-12 w-12 rounded-full bg-purple-950'></div>
+                  <div className='h-12 w-12 rounded-full bg-purple-950 overflow-hidden'>
+                    <img src={notification.sender?.avatar} alt="" />
+                  </div>
                 </div>
                 <span className='w-full' aria-disabled>
                   {notification.sender?.fullname} {notification?.message}  

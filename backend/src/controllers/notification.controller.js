@@ -3,6 +3,7 @@ import { asyncHandler } from '../utils/asyncHandler.js'
 import { Notification } from '../models/notification.model.js'
 import { ApiError } from '../utils/ApiError.js';
 
+
 export const getAllNotifications = asyncHandler(async (req, res) => {
   // Step 1: Fetch all notifications
   const notifications = await Notification.find({ receiver: req.user._id }).sort({ createdAt: -1 }).populate('sender', '-password -refreshToken')

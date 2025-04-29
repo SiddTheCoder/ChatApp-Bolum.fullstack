@@ -138,7 +138,9 @@ function ShowAllUsers() {
       {users?.map((user) => (
         <div key={user._id} className='flex flex-wrap gap-5 p-3 mb-10'>
           <div className='h-78 w-86 bg-slate-300 rounded-md shadow-lg flex flex-col items-center gap-3 p-2'>
-            <div className='h-[73%] w-[65%] bg-purple-950 rounded-full'></div>
+            <div className='h-[73%] w-[65%] bg-purple-950 rounded-full object-cover overflow-hidden'>
+              <img src={user.avatar} alt="" />
+            </div>
             <div className='w-full text-center -mt-1'>{user.fullname}</div>
 
             <div className='w-[80%] flex justify-center items-center gap-2'>
@@ -150,14 +152,14 @@ function ShowAllUsers() {
                       {!sentRequests.has(user._id) ? (
                           <span
                             onClick={() => toggleFriendRequest(user)}
-                            className='bg-purple-950/60 transition-all duration-150 ease-in-out hover:bg-purple-950/55 cursor-pointer text-center text-white px-5 py-1 rounded-sm w-[70%] flex gap-3'
+                            className='bg-purple-950/90 transition-all duration-150 ease-in-out hover:bg-purple-950/65 cursor-pointer text-center text-white px-5 py-1 rounded-sm w-[70%] flex gap-3'
                           >
                             <UserPlus />Add Friend
                           </span>
                         ) : (
                           <span
                             onClick={() => toggleFriendRequest(user)}
-                            className='transition-all duration-150 ease-in-out bg-purple-950/90 hover:bg-purple-950/75 cursor-pointer text-center text-white px-5 py-1 rounded-sm w-[70%] flex gap-3'
+                            className='transition-all duration-150 ease-in-out bg-purple-950/60 hover:bg-purple-950/75 cursor-pointer text-center text-white px-5 py-1 rounded-sm w-[70%] flex gap-3'
                           >
                             <UserRoundCog />Cancel Request
                             </span>
