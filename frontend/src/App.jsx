@@ -5,7 +5,9 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Lander from './pages/Lander';
 import Home from './pages/Home';
+import UserProfile from './pages/UserProfile';
 import PrivateRoute from './private/PrivateRoute';
+import RandomPageError from './pages/RandomPageError'
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
             <Route path="chat/:friendId" element={<ChatApp />} />
             </Route>
         </Route>
+        <Route path="/:username" element={<UserProfile />} />
+        <Route path="*" element={<RandomPageError />} />
       </Routes>
     </BrowserRouter>
     
