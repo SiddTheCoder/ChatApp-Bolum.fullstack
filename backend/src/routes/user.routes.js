@@ -13,7 +13,8 @@ import {
   rejectFriendRequest,
   getUserAllFriends,
   getUserById,
-  getUserFriendsWithLatestMessage
+  getUserFriendsWithLatestMessage,
+  getUserByUserName
 } from '../controllers/user.controller.js'
 
 
@@ -25,6 +26,7 @@ router.route('/register-user').post(upload.single('avatar'),registerUser)
 router.route('/login-user').post(loginUser)
 router.route('/get-all-users').get(getAllUsers)
 router.route('/get-user-by-id').get(getUserById)
+router.route('/get-user-by-username').get(getUserByUserName)
 
 
 //secured routes

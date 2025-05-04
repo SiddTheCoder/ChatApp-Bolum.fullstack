@@ -289,6 +289,21 @@ const getUserById = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200,user,'user Fteched Succesfully'))
 })
 
+const getUserByUserName = asyncHandler(async (req, res) => {
+  const { username } = req.query
+  if (!username) {
+    throw new ApiError(400,'UserName is required')
+  }
+
+  const user = await User.findOne({ username: username }).select('-password -refreshToken')
+  
+  if (!user) {
+   return res.status(500).json(new ApiResponse(500,{},'No userFound with such username'))
+  }
+
+  return res.status(200).json(new ApiResponse(200,user,'User Fetched successfully'))
+})
+
 const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user?._id)
     .populate('friends', '-password')
@@ -344,5 +359,6 @@ export {
   rejectFriendRequest,
   getUserAllFriends,
   getUserById,
-  getUserFriendsWithLatestMessage
+  getUserFriendsWithLatestMessage,
+  getUserByUserName
 }

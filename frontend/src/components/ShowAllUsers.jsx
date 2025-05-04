@@ -138,8 +138,8 @@ function ShowAllUsers() {
       {users?.map((user) => (
         <div key={user._id} className='flex flex-wrap gap-5 p-3 mb-10'>
           <div className='h-78 w-86 bg-slate-300 rounded-md shadow-lg flex flex-col items-center gap-3 p-2'>
-            <div className='h-[73%] w-[65%] bg-purple-950 rounded-full object-cover overflow-hidden'>
-              <img src={user.avatar} alt="" />
+            <div className='h-[73%] w-[65%] bg-purple-950 rounded-full object-cover bg-cover overflow-hidden'>
+              <img src={user.avatar} width={700} alt="" />
             </div>
             <div className='w-full text-center -mt-1'>{user.fullname}</div>
 
