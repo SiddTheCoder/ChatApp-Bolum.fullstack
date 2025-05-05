@@ -41,38 +41,40 @@ function Login() {
   }
 
   return (
-    <div
-      className='h-screen w-screen flex flex-col items-center justify-center bg-slate-700'
-    >
-      <div
-        className='h-96 w-2xl bg-white rounded-md shadow-lg flex flex-col items-center justify-center gap-3'
-      >
-        <form
-          className='flex flex-col items-center justify-center h-full w-full gap-3'>
-          <h1 className='text-center text-2xl font-bold'>Login</h1>
+    <div className="h-screen w-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-600 to-purple-600">
+      <div className="h-96 w-96 bg-white/30 backdrop-blur-lg rounded-md shadow-xl flex flex-col items-center justify-center gap-6 p-6">
+        <form className="flex flex-col items-center justify-center w-full gap-4">
+          <h1 className="text-3xl font-semibold text-white">Login</h1>
           <input
             type="text"
-            name='username'
-            placeholder='username'
-            className='border-2 border-gray-400 rounded-md p-2 mb-2'
+            name="username"
+            placeholder="Username"
+            className="bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-md p-3 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.username}
             onChange={handleChange}
           />
           <input
             type="password"
-            name='password'
-            placeholder='password'
-            className='border-2 border-gray-400 rounded-md p-2 mb-2'
+            name="password"
+            placeholder="Password"
+            className="bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-md p-3 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.password}
             onChange={handleChange}
           />
           <button
-            type='submit'
-            className='bg-blue-500 text-white rounded-md p-2 mb-2 hover:bg-blue-600 transition duration-300'
+            type="submit"
+            className="bg-blue-500 text-white rounded-md p-3 mb-3 hover:bg-blue-600 transition duration-300"
             onClick={handleSubmit}
-          >Login</button>
+          >
+            Login
+          </button>
         </form>
-        <p className='text-center text-sm'>Don't have an account? <Link to='/user/register' className='text-blue-500 hover:underline'>Register</Link></p>
+        <p className="text-sm text-white">
+          Don't have an account?{' '}
+          <Link to="/user/register" className="text-blue-200 hover:underline">
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   )
