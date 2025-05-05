@@ -51,19 +51,19 @@ function UserProfile() {
     },
     {
       name: 'Profile',
-      targte : '/:username'
+      targte : `/${username}`
     }
   ]
 
   return (
     <>
       
-      <div className='h-[5vh] left-10 top-5 absolute'>
+      <div className='h-[5vh] left-10 top-5 relative  sm:absolute'>
         <RouteHandler routes={routes} />
       </div>
          
-    <div className="min-h-[100vh] h-full bg-gradient-to-br from-blue-500 to-purple-900 flex items-center justify-center p-4">
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl p-6 h-[80vh] max-w-4xl w-full text-white border border-white/20">
+    <div className="min-h-[100vh] bg-gradient-to-br from-blue-500 to-purple-900 flex items-center justify-center p-4">
+      <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl p-6 min-h-[80vh] max-w-6xl w-full text-white border border-white/20">
         <div className="flex flex-col md:flex-row items-center gap-6">
           <img
             src={user?.avatar}

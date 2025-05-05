@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+/* Add your custom styles */
+@layer utilities {
+  .section-clip {
+    clip-path: inset(0% 0% 0% 0%);
+    animation: clipIn 1s ease forwards;
+  }
+
+  @keyframes clipIn {
+    0% {
+      clip-path: inset(100% 0 0 0);
+    }
+    100% {
+      clip-path: inset(0% 0% 0% 0%);
+    }
+  }
+}
