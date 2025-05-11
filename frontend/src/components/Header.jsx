@@ -4,9 +4,11 @@ import { useSocket } from '../context/SocketContext'
 import { useAuth } from '../hooks/useAuth';
 import ShowNotifications from './ShowNotifications';
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
 
+  const navigate = useNavigate()
   //for notification count animation
   const [animateNotif, setAnimateNotif] = useState(false);
   
@@ -115,7 +117,9 @@ function Header() {
           {showNotifications && <ShowNotifications isOpen={showNotifications} closeModel={toggleShowNotifications} />}
         </div>
 
-        <div className='flex justify-between items-center gap-2 pr-2 cursor-pointer bg-purple-600/30 hover:bg-purple-600 py-1 px-3 rounded transition-all duration-100 ease-in'>
+        <div
+          onClick={() => navigate(`/${currentUser?.username}`)}
+          className='flex justify-between items-center gap-2 pr-2 cursor-pointer bg-purple-600/30 hover:bg-purple-600 py-1 px-3 rounded transition-all duration-100 ease-in'>
           <div className='flex flex-col items-center justify-center h-6 text-sm'>
             <span className='text-sm'>{currentUser?.fullname}</span>
           </div>

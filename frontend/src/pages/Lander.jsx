@@ -61,7 +61,7 @@ function Lander() {
         <p className="text-lg md:text-xl text-gray-300 mb-8">
           Chat Freely. Connect Instantly.
         </p>
-        <Link to="/user/register">
+        <Link to="/user/login">
           <button className="bg-blue-600 hover:bg-purple-600 px-8 py-3 rounded-xl font-semibold transition-all shadow-lg">
             Get Started
           </button>
