@@ -69,12 +69,10 @@ function ChatApp({ }) {
     };
   
     const onReacted = ( ChatMessage ) => {
-      console.log('Message-Reacted in', ChatMessage);
       findOrCreateChatAndGetAllMessages(friendId)
     };
   
     const onGotReacted = (ChatMessage) => {
-      console.log('Got Message-Reacted in', ChatMessage);
       findOrCreateChatAndGetAllMessages(friendId)
     };
   
@@ -146,7 +144,7 @@ function ChatApp({ }) {
       {/* User Infro Model */}
       {userInfoModelStatus && (
         <div
-        className={`rounded-md transition-all duration-700 ease-in-out
+        className={`z-50 rounded-md transition-all duration-700 ease-in-out
           absolute right-2 top-25 h-[70vh] w-[24%] py-1 bg-gradient-to-br from-blue-500 via-purple-950 to-blue-700 text-white
           ${userInfoModelStatus ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto duration-500' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'}
         `}>

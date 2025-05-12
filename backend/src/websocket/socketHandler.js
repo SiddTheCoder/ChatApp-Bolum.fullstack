@@ -234,10 +234,6 @@ export function setupSocket(io) {
 
     // react to message
     socket.on('react-message', async ({ messageId, emojiId, receiverId }) => {
-      // console.table(messageId,emojiId, receiverId)
-      // console.log(messageId)
-      // console.log(emojiId)
-      // console.log(receiverId)
       try {
         const chatMessage = await ChatMessage.findByIdAndUpdate(
           messageId,
@@ -268,7 +264,7 @@ export function setupSocket(io) {
       }
     })
 
-     // react to message
+     // dis-react to message
      socket.on('dis-react-message', async ({ messageId, emojiId, receiverId }) => {
       try {
         const chatMessage = await ChatMessage.findByIdAndUpdate(

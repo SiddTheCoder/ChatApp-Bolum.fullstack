@@ -31,6 +31,9 @@ app.use('/api/v1/chatMessage', chatMessageRoutes)
 app.use('/api/v1/chat',chatRoutes)
 
 
+app.get('/ping', (req, res) => {
+  res.send('OK');
+});
 
 
 export default app
