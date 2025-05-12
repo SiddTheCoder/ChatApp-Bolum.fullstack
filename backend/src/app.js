@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { json } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -32,7 +32,11 @@ app.use('/api/v1/chat',chatRoutes)
 
 
 app.get('/ping', (req, res) => {
-  res.send('OK');
+  res.json({
+    message: 'OK',
+    uptime: process.uptime(), // in seconds
+    timestamp: new Date()
+  });
 });
 
 

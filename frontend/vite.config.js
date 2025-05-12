@@ -2,13 +2,15 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
+// Load environment variables
+const backendUrl = 'https://chatapp-bolum-backend.onrender.com' || 'http://localhost:3000';
+
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
       '/api/v1': {
-        target: 'http://localhost:3000',
+        target: backendUrl,
         changeOrigin: true,
         secure: false,
       },
