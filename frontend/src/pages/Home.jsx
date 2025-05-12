@@ -3,7 +3,8 @@ import Header from '../components/Header'
 import ShowAllUsers from '../components/ShowAllUsers'
 import Sidebar from '../components/Sidebar'
 import ChatApp from '../components/ChatApp'
-import { Outlet, useLocation  } from 'react-router-dom'; 
+import { Outlet, useLocation } from 'react-router-dom'; 
+
 
 function Home() {
   const location = useLocation()

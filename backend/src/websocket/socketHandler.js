@@ -217,11 +217,11 @@ export function setupSocket(io) {
   
 
         const receiverSocketId = connectedUsers.get(receiverId)
-        console.log('Receiver ID is ---------->>>>>>>>', receiverSocketId)
         socket.emit('message-sent', {
           message,
           chatId: chat._id
         }); // Notify sender the message was sent
+
         socket.to(receiverSocketId).emit('new-message', {
           message,
           chatId: chat._id
@@ -229,6 +229,74 @@ export function setupSocket(io) {
 
       } catch (err) {
         console.log('Error while sending message', err)
+      }
+    })
+
+    // react to message
+    socket.on('react-message', async ({ messageId, emojiId, receiverId }) => {
+      // console.table(messageId,emojiId, receiverId)
+      // console.log(messageId)
+      // console.log(emojiId)
+      // console.log(receiverId)
+      try {
+        const chatMessage = await ChatMessage.findByIdAndUpdate(
+          messageId,
+          { 
+            $set: {
+              isReacted: true,
+              reactedEmoji: emojiId
+            }
+          },
+          {new : true}
+        )
+        if (!chatMessage) {
+          throw new ApiError(500,'Error occured while saving the reacts in db')
+        }
+
+        const receiverSocketId = connectedUsers.get(receiverId)
+        console.log(chatMessage)
+          socket.emit('message-reacted', {
+            chatMessage
+          })
+
+          socket.to(receiverSocketId).emit('got-message-reacted', {
+            chatMessage
+          }); 
+        
+      } catch (err) {
+        console.log('Error occured while reacting the message',err)
+      }
+    })
+
+     // react to message
+     socket.on('dis-react-message', async ({ messageId, emojiId, receiverId }) => {
+      try {
+        const chatMessage = await ChatMessage.findByIdAndUpdate(
+          messageId,
+          { 
+            $set: {
+              isReacted: false,
+              reactedEmoji: null
+            }
+          },
+          {new : true}
+        )
+        if (!chatMessage) {
+          throw new ApiError(500,'Error occured while saving the reacts in db')
+        }
+
+        const receiverSocketId = connectedUsers.get(receiverId)
+        console.log(chatMessage)
+          socket.emit('message-dis-reacted', {
+            chatMessage
+          })
+
+          socket.to(receiverSocketId).emit('got-message-dis-reacted', {
+            chatMessage
+          }); 
+        
+      } catch (err) {
+        console.log('Error occured while reacting the message',err)
       }
     })
 

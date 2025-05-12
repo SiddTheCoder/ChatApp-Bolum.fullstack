@@ -25,7 +25,17 @@ const chatMessageSchema = new mongoose.Schema(
     seen: {
       type: Boolean,
       default : false
-    }
+    },
+    isReacted: {
+      type: Boolean,
+      default : false
+    },
+    reactedEmoji: [
+      {
+        type: String,
+        default : null
+      },
+    ]
   },
   { timestamps: true }
 );

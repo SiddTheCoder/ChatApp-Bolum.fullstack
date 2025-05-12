@@ -61,6 +61,42 @@ function ChatApp({ }) {
     }
   }, [socket])
 
+  // reacting messages
+  useEffect(() => {
+    if (!socket || typeof socket.on !== 'function') {
+      console.log('Socket is not function')
+      return
+    };
+  
+    const onReacted = ( ChatMessage ) => {
+      console.log('Message-Reacted in', ChatMessage);
+      findOrCreateChatAndGetAllMessages(friendId)
+    };
+  
+    const onGotReacted = (ChatMessage) => {
+      console.log('Got Message-Reacted in', ChatMessage);
+      findOrCreateChatAndGetAllMessages(friendId)
+    };
+  
+    socket.on('message-reacted', onReacted);
+    socket.on('got-message-reacted', onGotReacted);
+
+    socket.on('got-message-dis-reacted', () => {
+      findOrCreateChatAndGetAllMessages(friendId)
+    })
+
+    socket.on('message-dis-reacted', () => {
+      findOrCreateChatAndGetAllMessages(friendId)
+    })
+  
+    return () => {
+      socket.off('message-reacted', onReacted);
+      socket.off('got-message-reacted', onGotReacted);
+      socket.off('message-dis-reacted')
+      socket.off('got-message-dis-reacted')
+    };
+  }, [socket])
+
   // getting chat messages
   const getChatMessages = async (chatId) => {
     try {
