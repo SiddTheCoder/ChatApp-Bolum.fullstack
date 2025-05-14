@@ -10,7 +10,7 @@ export const SocketProvider = ({ children, value: currentUser }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [ready, setReady] = useState(false); // controls render timing
 
-  const socketUrl =  import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
+  const socketUrl =  import.meta.env.BACKEND_URL || 'http://localhost:3000';
 
   useEffect(() => {
     if (!currentUser || socketRef.current ) return;

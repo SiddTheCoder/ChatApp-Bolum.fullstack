@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 // Load environment variables
-const backendUrl = 'https://chatapp-bolum-backend.onrender.com' || 'http://localhost:3000';
+const backendUrl = import.meta.env.BACKEND_URL || 'http://localhost:3000';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
