@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import axios from '../utils/axiosInstance';
+import axios from 'axios';
 import { useSocket } from '../context/SocketContext'
 import { useAuth } from '../hooks/useAuth'
 

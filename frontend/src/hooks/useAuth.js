@@ -1,4 +1,4 @@
-import axios from '../utils/axiosInstance';
+import axios from 'axios';
 import { useState,useEffect } from 'react'
 
 const getCurrentUser = async () => {

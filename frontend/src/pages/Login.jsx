@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import axios from '../utils/axiosInstance';
+import axios from 'axios';
 
 function Login() {
   const navigate = useNavigate()

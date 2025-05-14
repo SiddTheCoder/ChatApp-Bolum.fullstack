@@ -5,7 +5,7 @@ import {
   Users
  } from 'lucide-react'
 import { useParams } from 'react-router-dom'
-import axios from '../utils/axiosInstance';
+import axios from 'axios';
 import { useAuth } from '../hooks/useAuth'
 import { useSocket } from '../context/SocketContext'
 import MessageBubble from './MessageBubble'

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import axios from '../utils/axiosInstance';
+import axios from 'axios';
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 import RouteHandler from '../components/RouteHandler'
