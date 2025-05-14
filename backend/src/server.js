@@ -28,19 +28,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// Serve React app (after API routes)
-import path from 'path'
-import { fileURLToPath } from 'url'
 
-// Required for __dirname in ES modules
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-app.use(express.static(path.join(__dirname, '../frontend/dist')))
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'))
-})
 
 
 // This function will handle the socket events and logic ( Setup Socket.IO )

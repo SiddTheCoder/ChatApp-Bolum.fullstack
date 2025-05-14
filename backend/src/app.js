@@ -1,4 +1,4 @@
-import express, { json } from 'express';
+import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -38,6 +38,8 @@ app.get('/ping', (req, res) => {
     timestamp: new Date()
   });
 });
+
+
 
 
 export default app

@@ -10,10 +10,12 @@ export const SocketProvider = ({ children, value: currentUser }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [ready, setReady] = useState(false); // controls render timing
 
-  useEffect(() => {
-    if (!currentUser) return;
+  const socketUrl =  import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
 
-    const newSocket = io('http://localhost:3000', {
+  useEffect(() => {
+    if (!currentUser || socketRef.current ) return;
+
+    const newSocket = io(socketUrl, {
       transports: ['websocket'],
       withCredentials: true,
       query: { userId: currentUser._id },
