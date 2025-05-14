@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../utils/axiosInstance';
 import { SocketProvider } from '../context/SocketContext';
 
 const PrivateRoute = () => {

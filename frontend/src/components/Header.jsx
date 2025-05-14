@@ -3,7 +3,7 @@ import { Settings, Search, Bell } from 'lucide-react';
 import { useSocket } from '../context/SocketContext'
 import { useAuth } from '../hooks/useAuth';
 import ShowNotifications from './ShowNotifications';
-import axios from 'axios'
+import axios from '../utils/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 
 function Header() {

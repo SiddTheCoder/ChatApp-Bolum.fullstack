@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import axios from '../utils/axiosInstance';
 import { UserPlus, UserRoundCog } from 'lucide-react'
 import { useSocket } from '../context/SocketContext'
 import { useAuth } from '../hooks/useAuth'

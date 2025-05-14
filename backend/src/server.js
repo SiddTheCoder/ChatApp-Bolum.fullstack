@@ -14,10 +14,11 @@ await connectDB()
  
 // Create an HTTP server and attach the Express app to it
 // This is necessary for Socket.IO to work with Express
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173'
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:5173 || https://bolum-eight.vercel.app/',
+    origin:  CORS_ORIGIN,
     methods: ['GET', 'POST'],
   },
 });

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { CheckCheck } from 'lucide-react'
-import axios from 'axios'
+import axios from '../utils/axiosInstance';
 import { useSocket } from '../context/SocketContext'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom';
