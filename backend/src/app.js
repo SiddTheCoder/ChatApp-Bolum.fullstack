@@ -22,13 +22,14 @@ import userRoutes from './routes/user.routes.js'
 import notificationRoutes from './routes/notification.routes.js'
 import chatMessageRoutes from './routes/chatMessage.routes.js'
 import chatRoutes from './routes/chat.routes.js'
-
+// import openaiChatRoutes from './routes/openai.routes.js'
 
 //use routes
 app.use('/api/v1/user', userRoutes)
 app.use('/api/v1/notification', notificationRoutes)
 app.use('/api/v1/chatMessage', chatMessageRoutes)
-app.use('/api/v1/chat',chatRoutes)
+app.use('/api/v1/chat', chatRoutes)
+// app.use('/api/v1/openai',openaiChatRoutes)
 
 
 app.get('/ping', (req, res) => {

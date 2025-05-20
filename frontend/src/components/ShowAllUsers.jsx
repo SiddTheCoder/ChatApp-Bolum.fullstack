@@ -3,8 +3,10 @@ import axios from 'axios';
 import { UserPlus, UserRoundCog } from 'lucide-react'
 import { useSocket } from '../context/SocketContext'
 import { useAuth } from '../hooks/useAuth'
+import { useNavigate } from 'react-router-dom';
 
 function ShowAllUsers() {
+  const navigate = useNavigate()
   // for storing the request button state
   const [sentRequests, setSentRequests] = useState(new Set())
 
@@ -141,7 +143,9 @@ function ShowAllUsers() {
             <div className='h-[73%] w-[65%] bg-purple-950 rounded-full object-cover bg-cover overflow-hidden'>
               <img src={user.avatar} width={700} alt="" />
             </div>
-            <div className='w-full text-center -mt-1'>{user.fullname}</div>
+            <div className='w-full flex justify-center items-center -mt-1'>
+              <span onClick={() => navigate(`/${user.username}`)} className='hover:underline cursor-pointer transition-all duration-150 ease-in'>{user.fullname}</span>
+            </div>
 
             <div className='w-[80%] flex justify-center items-center gap-2'>
               {

@@ -103,7 +103,7 @@ function Header() {
       <div className='flex gap-1 items-center justify-center cursor-pointer hover:bg-purple-950/50 py-1 px-4 rounded '>Search <Search className='relative top-[0.5px] hover:animate-bounce' size={20} strokeWidth={1.75} absoluteStrokeWidth /></div>
 
       <div className='flex justify-around items-center gap-2'>
-        <div><Settings className='hover:animate-spin cursor-pointer hover:scale-[1.2] transition-all duration-150 ease-in' /></div>
+        <div onClick={() => navigate('/settings')}><Settings className='hover:animate-spin cursor-pointer hover:scale-[1.2] transition-all duration-150 ease-in' /></div>
         <div className='relative' onClick={toggleShowNotifications}>
           <Bell className='cursor-pointer hover:scale-[1.2] hover:z-10 transition-all duration-150 ease-in ml-2 mr-2' />
           {notificationCount > 0 && (

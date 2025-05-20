@@ -1,10 +1,12 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 
 function Register() {
   const navigate = useNavigate()
+  const [errMessage, setErrorMessage] = useState(null)
+  const [isRegistering, setIsRegistering] = useState(false)
 
   const [formData, setFormData] = React.useState({
     username: '',
@@ -24,12 +26,45 @@ function Register() {
   const handleRegisterForm = (e) => {
     e.preventDefault()
     console.log('Form submitted:', formData)
-    // Add your register logic here (e.g., API call)
-    registerUserToDB()
+    if ((formData.username || formData.password) === '') {
+      setErrorMessage('User Credentials is required')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 3000);
+    }
+    else if ((formData.username) === '') {
+      setErrorMessage('Username or Email is Required')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 3000);
+    }
+    else if ((formData.fullname) === '') {
+      setErrorMessage('Full Name is required')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 3000);
+    }
+    else if ((formData.email) === '') {
+      setErrorMessage('Email is required')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 3000);
+    }
+    else if ((formData.password) === '') {
+      setErrorMessage('Password is required')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 3000);
+    }
+    else {
+      // Adding register API logic  
+      registerUserToDB()
+    }
   }
 
   const registerUserToDB = async () => {
     try {
+      setIsRegistering(true)
       const response = await axios.post('/api/v1/user/register-user', formData, {
         withCredentials: true,
         headers: {
@@ -37,8 +72,9 @@ function Register() {
         }
       })
       console.log('User registered successfully', response)
-      navigate('/user/login')
+      navigate('/home')
     } catch (error) {
+      setIsRegistering(false)
       console.log('Error occurred while registering the user', error.response?.data)
     }
   }
@@ -82,11 +118,16 @@ function Register() {
             value={formData.password}
             onChange={handleChange}
           />
+
+          <div className='h-6 w-full flex justify-center'>
+            {errMessage && <span className='text-red-500 h-full'>{errMessage}</span>}
+          </div>
+
           <button
             type="submit"
-            className="w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
+            className="cursor-pointer w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
           >
-            Register
+            {isRegistering ? 'Registering' : 'Register'}
           </button>
         </form>
         <p className="text-center text-white mt-4">

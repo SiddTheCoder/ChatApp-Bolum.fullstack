@@ -8,6 +8,9 @@ import Home from './pages/Home';
 import UserProfile from './pages/UserProfile';
 import PrivateRoute from './private/PrivateRoute';
 import RandomPageError from './pages/RandomPageError'
+import Setting from './pages/Setting';
+import ProfileSettings from './pages/setting-pages/ProfileSettings';
+import AccountSettings from './pages/setting-pages/AccountSettings';
 
 function App() {
   return (
@@ -24,6 +27,10 @@ function App() {
             </Route>
         </Route>
         <Route path="/:username" element={<UserProfile />} />
+        <Route path="/settings" element={<Setting />}>
+        <Route path="profile" element={<ProfileSettings />} />
+        <Route path="account" element={<AccountSettings />} />
+      </Route>
         <Route path="*" element={<RandomPageError />} />
       </Routes>
     </BrowserRouter>

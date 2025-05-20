@@ -44,6 +44,21 @@ function UserProfile() {
     getUserByUserName(username)
   }, [currentUser])
 
+  const logoutUser = async () => {
+    try {
+      const response = await axios.get('/api/v1/user/logout-user', {}, {
+        withCredentials: true
+      })
+      console.log("User Logout", response)
+      console.log('Naviageting')
+      navigate('/')
+      if (response.data?.status ==+ 200 || response.data?.statusText === 'OK') {
+      }
+    } catch (err) {
+      console.log('Error occured while Logouting the user', err)
+    }
+  }
+
   const routes = [
     {
       name: 'Home',
@@ -75,9 +90,15 @@ function UserProfile() {
             <p className="text-lg text-white/70">@{user?.username}</p>
             <p className="mt-2 text-white/80">{user?.bio}</p>
             <p className="mt-1 text-sm text-white/60">{user?.email}</p>
-            <div className="mt-2">
+            <div className="mt-2 flex w-full">
                {isUserAuthenticated && <span className="inline-block px-3 py-1 cursor-pointer hover:bg-gradient-to-br from-purple-400 to-blue-600 bg-gradient-to-bl transition-all duration-300 ease-in-out  border-2  text-sm rounded-full">
                   Edit Profile
+               </span>
+               }
+            </div>
+            <div className="mt-2">
+               {isUserAuthenticated && <span onClick={logoutUser} className="inline-block px-3 py-1 cursor-pointer hover:bg-gradient-to-br from-purple-400 to-blue-600 bg-gradient-to-bl transition-all duration-300 ease-in-out  border-2  text-sm rounded-full">
+                  Logout
                </span>
                }
             </div>
