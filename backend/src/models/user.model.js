@@ -77,6 +77,8 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  socialHandles: [],
+  
   refreshToken: {
     type: String,
   }

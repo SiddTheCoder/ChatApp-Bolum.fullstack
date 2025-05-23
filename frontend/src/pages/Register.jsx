@@ -1,6 +1,5 @@
 import React,{useState} from 'react'
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 
 function Register() {
@@ -17,49 +16,26 @@ function Register() {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value
-    }))
+    setFormData((prevData) => ({ ...prevData, [name]: value }))
   }
 
   const handleRegisterForm = (e) => {
     e.preventDefault()
-    console.log('Form submitted:', formData)
     if ((formData.username || formData.password) === '') {
       setErrorMessage('User Credentials is required')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000);
-    }
-    else if ((formData.username) === '') {
+    } else if (formData.username === '') {
       setErrorMessage('Username or Email is Required')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000);
-    }
-    else if ((formData.fullname) === '') {
+    } else if (formData.fullname === '') {
       setErrorMessage('Full Name is required')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000);
-    }
-    else if ((formData.email) === '') {
+    } else if (formData.email === '') {
       setErrorMessage('Email is required')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000);
-    }
-    else if ((formData.password) === '') {
+    } else if (formData.password === '') {
       setErrorMessage('Password is required')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000);
-    }
-    else {
-      // Adding register API logic  
+    } else {
       registerUserToDB()
+      return
     }
+    setTimeout(() => setErrorMessage(null), 3000)
   }
 
   const registerUserToDB = async () => {
@@ -67,78 +43,38 @@ function Register() {
       setIsRegistering(true)
       const response = await axios.post('/api/v1/user/register-user', formData, {
         withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
       })
-      console.log('User registered successfully', response)
       navigate('/home')
     } catch (error) {
       setIsRegistering(false)
-      console.log('Error occurred while registering the user', error.response?.data)
     }
   }
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
-      <div
-        className="h-auto py-5 px-5 min-w-[30vw]  bg-white/30 backdrop-blur-lg rounded-md shadow-xl bg-opacity-3zp-8 flex flex-col items-center justify-center gap-4"
-      >
-        <form onSubmit={handleRegisterForm} className="flex flex-col items-center w-full gap-4 bg-transparent">
-          <h1 className="text-white text-2xl font-semibold my-5">Register Form</h1>
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            className="w-full p-3 border-2 border-gray-400 rounded-md bg-transparent text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.username}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            name="fullname"
-            placeholder="Full Name"
-            className="w-full p-3 border-2 border-gray-400 rounded-md bg-transparent text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.fullname}
-            onChange={handleChange}
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            className="w-full p-3 border-2 border-gray-400 rounded-md bg-transparent text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            className="w-full p-3 border-2 border-gray-400 rounded-md bg-transparent text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.password}
-            onChange={handleChange}
-          />
-
-          <div className='h-6 w-full flex justify-center'>
-            {errMessage && <span className='text-red-500 h-full'>{errMessage}</span>}
-          </div>
-
-          <button
-            type="submit"
-            className="cursor-pointer w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
-          >
-            {isRegistering ? 'Registering' : 'Register'}
+    <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-r from-white via-purple-100 to-blue-100">
+      <div className="min-w-[30vw] py-6 px-6 bg-white border border-purple-300 rounded-lg shadow-2xl flex flex-col items-center">
+        <form onSubmit={handleRegisterForm} className="w-full flex flex-col gap-4">
+          <h1 className="text-3xl text-center font-bold text-purple-700 mb-4">Register</h1>
+          <input type="text" name="username" placeholder="Username"
+            className="p-3 rounded border border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500" value={formData.username} onChange={handleChange} />
+          <input type="text" name="fullname" placeholder="Full Name"
+            className="p-3 rounded border border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500" value={formData.fullname} onChange={handleChange} />
+          <input type="email" name="email" placeholder="Email"
+            className="p-3 rounded border border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500" value={formData.email} onChange={handleChange} />
+          <input type="password" name="password" placeholder="Password"
+            className="p-3 rounded border border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500" value={formData.password} onChange={handleChange} />
+          {errMessage && <span className="text-red-600 text-center">{errMessage}</span>}
+          <button type="submit" className="p-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded hover:opacity-90">
+            {isRegistering ? 'Registering...' : 'Register'}
           </button>
         </form>
-        <p className="text-center text-white mt-4">
-          Already have an account?{' '}
-          <Link to="/user/login" className="text-cyan-200 hover:underline">
-            Login
-          </Link>
+        <p className="text-sm mt-4 text-gray-600">
+          Already have an account? <Link to="/user/login" className="text-blue-600 hover:underline">Login</Link>
         </p>
       </div>
     </div>
   )
 }
 
-export default Register
+export default Register;

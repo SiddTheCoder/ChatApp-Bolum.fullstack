@@ -8,7 +8,7 @@ import Home from './pages/Home';
 import UserProfile from './pages/UserProfile';
 import PrivateRoute from './private/PrivateRoute';
 import RandomPageError from './pages/RandomPageError'
-import Setting from './pages/Setting';
+import SettingLayout from './pages/SettingLayout';
 import ProfileSettings from './pages/setting-pages/ProfileSettings';
 import AccountSettings from './pages/setting-pages/AccountSettings';
 
@@ -27,7 +27,7 @@ function App() {
             </Route>
         </Route>
         <Route path="/:username" element={<UserProfile />} />
-        <Route path="/settings" element={<Setting />}>
+        <Route path="/settings" element={<SettingLayout />}>
         <Route path="profile" element={<ProfileSettings />} />
         <Route path="account" element={<AccountSettings />} />
       </Route>

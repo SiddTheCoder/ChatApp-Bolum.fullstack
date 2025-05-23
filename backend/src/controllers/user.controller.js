@@ -161,6 +161,11 @@ const logoutUser = asyncHandler(async (req, res) => {
   ))
 })
 
+const deleteUser = asyncHandler(async (req, res) => {
+  await User.deleteOne({ _id: req.user?._id });
+  return res.status(200).json(new ApiResponse(200,{},'Account Deleted Successfully'))
+})
+
 const getCurrentUser = asyncHandler(async (req, res) => {
   const user = req.user
   return res
@@ -278,13 +283,8 @@ const getUserAllFriends = asyncHandler(async (req, res) => {
 })
 
 const getUserById = asyncHandler(async (req, res) => {
-  const { userId } = req.query
-  
-  if (!userId) {
-    throw new ApiError(400,'userId is required')
-  }
-
-  const user = await User.findById(userId).select('-refreshToken -password')
+ 
+  const user = await User.findById(req.user?._id).select('-refreshToken -password')
 
   return res.status(200).json(new ApiResponse(200,user,'user Fteched Succesfully'))
 })
@@ -360,5 +360,6 @@ export {
   getUserAllFriends,
   getUserById,
   getUserFriendsWithLatestMessage,
-  getUserByUserName
+  getUserByUserName,
+  deleteUser
 }

@@ -7,78 +7,69 @@ import { useNavigate } from 'react-router-dom';
 
 function ShowAllUsers() {
   const navigate = useNavigate()
-  // for storing the request button state
   const [sentRequests, setSentRequests] = useState(new Set())
-
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(false)
 
-  // from hook
   const currentUser = useAuth()
-  // from context
   const { socket } = useSocket()
 
   const getAllUsers = async () => {
-      try {
-        setLoading(true)
-        const response = await axios.get('/api/v1/user/get-all-users', {
-          withCredentials: true
-        })
+    try {
+      setLoading(true)
+      const response = await axios.get('/api/v1/user/get-all-users', {
+        withCredentials: true
+      })
 
-        const filteredUsers = response.data.data.filter(
-          user => user.username !== currentUser?.username
-        )
+      const filteredUsers = response.data.data.filter(
+        user => user.username !== currentUser?.username
+      )
 
-        setUsers(filteredUsers)
+      setUsers(filteredUsers)
 
-        // Sync sentRequests with server data
-        const alreadySent = filteredUsers
-          .filter(user => user.alreadyRequestSent?.includes(currentUser?._id))
-          .map(user => user._id)
+      const alreadySent = filteredUsers
+        .filter(user => user.alreadyRequestSent?.includes(currentUser?._id))
+        .map(user => user._id)
 
-        setSentRequests(new Set(alreadySent))
-
-        setLoading(false)
-      } catch (err) {
-        console.log('Error occurred while getting all users', err.response?.data)
-        setLoading(false)
-      }
+      setSentRequests(new Set(alreadySent))
+      setLoading(false)
+    } catch (err) {
+      console.log('Error occurred while getting all users', err.response?.data)
+      setLoading(false)
     }
+  }
 
   useEffect(() => {
     if (!currentUser || !socket) return
 
     socket.emit('register-user', currentUser._id)
 
-    socket.on('friend-request-accepted', ({from,to}) => {
+    socket.on('friend-request-accepted', ({ from, to }) => {
       setUsers(prevUsers =>
-      prevUsers.map(user => {
-        if (user._id === from || user._id === to) {
-          return {
-            ...user,
-            friends: [...user.friends, currentUser._id]
-          };
-        }
-        return user;
-      }))
+        prevUsers.map(user => {
+          if (user._id === from || user._id === to) {
+            return {
+              ...user,
+              friends: [...user.friends, currentUser._id]
+            };
+          }
+          return user;
+        })
+      )
     })
 
-    socket.on('rejected-friend-request', ({from}) => {
-      console.log('Freind Request Rejected from', from )
-      
-      // CLEAN the button UI immediately
+    socket.on('rejected-friend-request', ({ from }) => {
+      console.log('Friend Request Rejected from', from)
       setSentRequests(prev => {
         const newSet = new Set(prev);
-        newSet.delete(from); // IMPORTANT
+        newSet.delete(from);
         return newSet;
       });
-
     })
 
-    // Clean up on unmount
     return () => {
       socket.off('friend-request-accepted');
-      socket.off('rejected-friend-request');  // <-- important to clean this too
+      socket.off('rejected-friend-request');
       socket.off('friend-request-received');
     }
   }, [currentUser, socket])
@@ -98,8 +89,7 @@ function ShowAllUsers() {
         setTimeout(() => {
           getAllUsers()
         }, 4000)
-      }
-      else {
+      } else {
         newSet.add(user._id)
         sendFriendRequest(user)
         setTimeout(() => {
@@ -111,73 +101,83 @@ function ShowAllUsers() {
   }
 
   const sendFriendRequest = async (user) => {
-    console.log('Sending friend request to:', user.username, `by: ${currentUser?.username}`)
     if (socket) {
       socket.emit('send-friend-request', {
         senderId: currentUser._id,
         receiverId: user._id
       })
     }
-    const response = await axios.post(`/api/v1/user/add-friend-request?requestGetterId=${user._id}`, {withCredentials:true})
-    console.log('Friend request sent:', response)
+    await axios.post(`/api/v1/user/add-friend-request?requestGetterId=${user._id}`, {
+      withCredentials: true
+    })
   }
 
   const cancelFriendRequest = async (user) => {
-    console.log('Cancelling friend request to:', user.username, `by: ${currentUser?.username}`)
     if (socket) {
       socket.emit('cancel-friend-request', {
         senderId: currentUser._id,
         receiverId: user._id
       })
     }
-    const response = await axios.post(`/api/v1/user/cancel-friend-request?requestGetterId=${user._id}`,{withCredentials:true})
-    console.log('Friend request cancelled:', response)
+    await axios.post(`/api/v1/user/cancel-friend-request?requestGetterId=${user._id}`, {
+      withCredentials: true
+    })
   }
 
   return (
-    <>
-      <div className='h-full w-full overflow-y-scroll flex flex-wrap'>
-      {users?.map((user) => (
-        <div key={user._id} className='flex flex-wrap gap-5 p-3 mb-10'>
-          <div className='h-78 w-86 bg-slate-300 rounded-md shadow-lg flex flex-col items-center gap-3 p-2'>
-            <div className='h-[73%] w-[65%] bg-purple-950 rounded-full object-cover bg-cover overflow-hidden'>
-              <img src={user.avatar} width={700} alt="" />
-            </div>
-            <div className='w-full flex justify-center items-center -mt-1'>
-              <span onClick={() => navigate(`/${user.username}`)} className='hover:underline cursor-pointer transition-all duration-150 ease-in'>{user.fullname}</span>
+    <div className="h-full w-full overflow-y-scroll p-6 bg-gray-50">
+      <div className="flex flex-wrap justify-center gap-6">
+        {users?.map((user) => (
+          <div
+            key={user._id}
+            className="w-72 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-transform duration-300 hover:scale-[1.02] p-5 flex flex-col items-center space-y-3"
+          >
+            <div className="w-24 h-24 rounded-full overflow-hidden shadow-sm">
+              <img
+                src={user.avatar}
+                alt={user.fullname}
+                className="w-full h-full object-cover"
+              />
             </div>
 
-            <div className='w-[80%] flex justify-center items-center gap-2'>
-              {
-                user.friends?.includes(currentUser._id) ? (
-                <div  className='bg-purple-950/90 transition-all duration-150 ease-in-out hover:bg-purple-950/55 cursor-pointer text-center text-white justify-center px-5 py-1 rounded-sm w-[70%] flex gap-3'><span>Friend</span></div>
-                ) : (
-                    <div className='w-full flex justify-center'>
-                      {!sentRequests.has(user._id) ? (
-                          <span
-                            onClick={() => toggleFriendRequest(user)}
-                            className='bg-purple-950/90 transition-all duration-150 ease-in-out hover:bg-purple-950/65 cursor-pointer text-center text-white px-5 py-1 rounded-sm w-[70%] flex gap-3'
-                          >
-                            <UserPlus />Add Friend
-                          </span>
-                        ) : (
-                          <span
-                            onClick={() => toggleFriendRequest(user)}
-                            className='transition-all duration-150 ease-in-out bg-purple-950/60 hover:bg-purple-950/75 cursor-pointer text-center text-white px-5 py-1 rounded-sm w-[70%] flex gap-3'
-                          >
-                            <UserRoundCog />Cancel Request
-                            </span>
-                        )}
-                    </div>
-                )
-              }
-              
+            <div>
+              <span
+                onClick={() => navigate(`/${user.username}`)}
+                className="text-gray-800 font-semibold text-lg cursor-pointer hover:underline"
+              >
+                {user.fullname}
+              </span>
+            </div>
+
+            <div className="w-full">
+              {user.friends?.includes(currentUser._id) ? (
+                <div className="bg-green-100 text-green-800 text-sm px-4 py-1 rounded-md text-center">
+                  Friend
+                </div>
+              ) : (
+                <div className="flex justify-center">
+                  {!sentRequests.has(user._id) ? (
+                    <button
+                      onClick={() => toggleFriendRequest(user)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md flex items-center gap-2 text-sm shadow-sm transition"
+                    >
+                      <UserPlus size={16} /> Add Friend
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => toggleFriendRequest(user)}
+                      className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-1 rounded-md flex items-center gap-2 text-sm transition"
+                    >
+                      <UserRoundCog size={16} /> Cancel Request
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      ))}
+        ))}
       </div>
-    </>
+    </div>
   )
 }
 

@@ -14,7 +14,8 @@ import {
   getUserAllFriends,
   getUserById,
   getUserFriendsWithLatestMessage,
-  getUserByUserName
+  getUserByUserName,
+  deleteUser
 } from '../controllers/user.controller.js'
 
 
@@ -25,7 +26,7 @@ const router = Router()
 router.route('/register-user').post(upload.single('avatar'),registerUser)
 router.route('/login-user').post(loginUser)
 router.route('/get-all-users').get(getAllUsers)
-router.route('/get-user-by-id').get(getUserById)
+router.route('/get-user-by-id').get(verifyJWT,getUserById)
 router.route('/get-user-by-username').get(getUserByUserName)
 
 
@@ -33,7 +34,8 @@ router.route('/get-user-by-username').get(getUserByUserName)
 router.route('/logout-user').get(verifyJWT,logoutUser)
 router.route('/get-current-user').get(verifyJWT, getCurrentUser)
 router.route('/get-user-all-freinds').get(verifyJWT, getUserAllFriends)
-router.route('/get-user-friends-withLatest-messages').get(verifyJWT,getUserFriendsWithLatestMessage)
+router.route('/get-user-friends-withLatest-messages').get(verifyJWT, getUserFriendsWithLatestMessage)
+router.route('/delete-user-account').post(verifyJWT,deleteUser)
 
 //friend request (secured routes)
 router.route('/add-friend-request').post(verifyJWT,addFriendRequest)

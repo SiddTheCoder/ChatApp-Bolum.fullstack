@@ -47,7 +47,7 @@ function EmojiCollection({ ChatMessageId , chatMessageSenderId}) {
   
   
   return (
-    <div className='h-12 w-46  items-center flex justify-around p-2 rounded-md shadow-2xl shadow-black bg-white/90 absolute -top-12  left-5'>
+    <div className='h-12 w-46  items-center flex justify-around p-2 rounded-md shadow-2xl shadow-black bg-white/90 absolute z-50 top-8  left-5'>
       {Object.entries(emojies).map(([id, emoji]) => (
         <span className='text-xl hover:-translate-y-2 hover:scale-150 hover:-rotate-12 duration-300 ease-in-out transition-all cursor-pointer' onClick={() => handleEmojiClick(id)} key={id}>{emoji }</span>
       ))}
