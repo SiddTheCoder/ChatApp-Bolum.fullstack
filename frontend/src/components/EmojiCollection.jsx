@@ -29,11 +29,11 @@ function EmojiCollection({ ChatMessageId , chatMessageSenderId}) {
     };
   
     const onReacted = ( ChatMessage ) => {
-      console.log('Message-Reacted in', ChatMessage);
+      // console.log('Message-Reacted in', ChatMessage);
     };
   
     const onGotReacted = (ChatMessage) => {
-      console.log('Got Message-Reacted in', ChatMessage);
+      // console.log('Got Message-Reacted in', ChatMessage);
     };
   
     socket.on('message-reacted', onReacted);

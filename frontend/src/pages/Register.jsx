@@ -41,7 +41,7 @@ function Register() {
   const registerUserToDB = async () => {
     try {
       setIsRegistering(true)
-      const response = await axios.post('/api/v1/user/register-user', formData, {
+      const response = await axios.post('https://chatapp-bolum-backend.onrender.com/api/v1/user/register-user', formData, {
         withCredentials: true,
         headers: { 'Content-Type': 'application/json' }
       })

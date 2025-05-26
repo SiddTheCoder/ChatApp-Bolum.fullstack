@@ -18,7 +18,7 @@ function Sidebar() {
       const response = await axios.get('/api/v1/user/get-user-all-freinds', {}, {
         withCredentials : true
       })
-      console.log('Freinds fetched sc-----c', response.data.data?.friends)
+      // console.log('Freinds fetched sc-----c', response.data.data?.friends)
       setFriends(response.data.data?.friends)
     } catch (err) {
       console.log('Error Occured while getting all friends', err)
@@ -36,7 +36,7 @@ function Sidebar() {
         ...prev,
         [message.sender]: message.content, // store latest message for friend
       }));
-      console.log("New message recieved")
+      // console.log("New message recieved")
       await getUserFriendsWithTheirLatestMessages()
     });
 
@@ -47,10 +47,10 @@ function Sidebar() {
 
   const getUserFriendsWithTheirLatestMessages = async () => {
     try {
-      const response = await axios.get("/api/v1/user/get-user-friends-withLatest-messages", {}, {
+      const response = await axios.get("https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-friends-withLatest-messages", {}, {
         withCredentials : true
       })
-      console.log('Friends with latest Message ', response.data)
+      // console.log('Friends with latest Message ', response.data)
       setFriends(response.data)
     } catch (err) {
       console.log('Error occured while fetching all friends with their latestMessage')

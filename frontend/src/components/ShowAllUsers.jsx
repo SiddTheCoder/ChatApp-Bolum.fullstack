@@ -17,7 +17,7 @@ function ShowAllUsers() {
   const getAllUsers = async () => {
     try {
       setLoading(true)
-      const response = await axios.get('/api/v1/user/get-all-users', {
+      const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/user/get-all-users', {
         withCredentials: true
       })
 
@@ -59,7 +59,7 @@ function ShowAllUsers() {
     })
 
     socket.on('rejected-friend-request', ({ from }) => {
-      console.log('Friend Request Rejected from', from)
+      // console.log('Friend Request Rejected from', from)
       setSentRequests(prev => {
         const newSet = new Set(prev);
         newSet.delete(from);
@@ -107,7 +107,7 @@ function ShowAllUsers() {
         receiverId: user._id
       })
     }
-    await axios.post(`/api/v1/user/add-friend-request?requestGetterId=${user._id}`, {
+    await axios.post(`https://chatapp-bolum-backend.onrender.com/api/v1/user/add-friend-request?requestGetterId=${user._id}`, {
       withCredentials: true
     })
   }
@@ -119,7 +119,7 @@ function ShowAllUsers() {
         receiverId: user._id
       })
     }
-    await axios.post(`/api/v1/user/cancel-friend-request?requestGetterId=${user._id}`, {
+    await axios.post(`https://chatapp-bolum-backend.onrender.com/api/v1/user/cancel-friend-request?requestGetterId=${user._id}`, {
       withCredentials: true
     })
   }

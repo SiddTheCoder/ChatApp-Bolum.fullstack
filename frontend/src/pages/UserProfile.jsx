@@ -29,7 +29,7 @@ function UserProfile() {
   
   const getUserByUserName = async (username) => {
     try {
-      const response = await axios.get(`/api/v1/user/get-user-by-username?username=${username}`)
+      const response = await axios.get(`https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-by-username?username=${username}`)
       // console.log('User Fteched successfully', response.data.data)
       setUser(response.data.data)
     } catch (error) {
@@ -46,7 +46,7 @@ function UserProfile() {
 
   const logoutUser = async () => {
     try {
-      const response = await axios.get('/api/v1/user/logout-user', {}, {
+      const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/user/logout-user', {}, {
         withCredentials: true
       })
       // console.log("User Logout", response)

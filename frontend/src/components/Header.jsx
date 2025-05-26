@@ -34,7 +34,7 @@ function Header() {
   
 
   const getUnSeenNotifications = async () => {
-    const response = await axios.get('/api/v1/notification/get-unseen-notifications-count', {
+    const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/notification/get-unseen-notifications-count', {
       withcredentials : true
     })
     setNotificationCount(response.data.data)
@@ -46,17 +46,17 @@ function Header() {
       setNotificationCount((prev) => prev+1)
     })
     socket?.on('cancelled-friend-request', () => {
-      console.log('Friend Request cancelled')
+      // console.log('Friend Request cancelled')
       setNotificationCount((prev) => prev-1)
     })
 
     socket?.on('friend-request-accepted', (data) => {
-      console.log('Friend Request accepted from', data)
+      // console.log('Friend Request accepted from', data)
       setNotificationCount((prev) => prev+1)
     })
 
     socket?.on('rejected-friend-request', () => {
-      console.log('Friend Request Rejected')
+      // console.log('Friend Request Rejected')
       setNotificationCount((prev) => prev+1)
     })
   } , [currentUser])

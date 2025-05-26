@@ -29,7 +29,7 @@ const MessageBubble = ({ isSelf, message, user }) => {
   }
 
   const handleEmojiDoubleClick = (messageId,emojiId,receiverId) => {
-    console.log('Clicked on the message,', messageId)
+    // console.log('Clicked on the message,', messageId)
     socket.emit('dis-react-message', {
       messageId, emojiId, receiverId
     })

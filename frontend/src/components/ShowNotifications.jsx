@@ -12,9 +12,9 @@ function ShowNotifications({ closeModel, isOpen }) {
   
   const getAllNotifications = async () => {
    try {
-     const response = await axios.get('/api/v1/notification/get-user-all-notifications', { withCredentials: true })
+     const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/notification/get-user-all-notifications', { withCredentials: true })
      setNotications(response.data.data)
-     console.log('All Notification',response.data.data)
+    //  console.log('All Notification',response.data.data)
     
    } catch (error) {
     console.log('Error occured', error)

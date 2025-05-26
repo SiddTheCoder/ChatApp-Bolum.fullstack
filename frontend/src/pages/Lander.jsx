@@ -30,7 +30,7 @@ function Lander() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const response = await axios.get('/api/v1/user/verify-user', { withCredentials: true });
+      const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/user/verify-user', { withCredentials: true });
       if (response.data.isAuthenticated) {
         navigate('/home');
       }

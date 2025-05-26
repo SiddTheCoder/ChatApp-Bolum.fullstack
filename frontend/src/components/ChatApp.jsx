@@ -25,7 +25,7 @@ function ChatApp({ }) {
   // getting iser by id 
   const getUserById = async () => {
     try {
-      const response = await axios.get(`/api/v1/user/get-user-by-id?userId=${friendId}`)
+      const response = await axios.get(`https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-by-id?userId=${friendId}`)
       setUser(response.data.data)
     } catch (err) {
       console.log('Error occured while fetching the user by ID', err)
@@ -47,12 +47,12 @@ function ChatApp({ }) {
   // socket behaviours
   useEffect(() => {
     socket?.on('message-sent', async ({message,chatId}) => {
-      console.log('Message Sent', message)
+      // console.log('Message Sent', message)
      await findOrCreateChatAndGetAllMessages(friendId)
     })
 
     socket?.on("new-message", async ({message,chatId}) => {
-      console.log('Message Received', message)
+      // console.log('Message Received', message)
       await findOrCreateChatAndGetAllMessages(friendId)
     })
 
@@ -98,8 +98,8 @@ function ChatApp({ }) {
   // getting chat messages
   const getChatMessages = async (chatId) => {
     try {
-      const response = await axios.get(`/api/v1/chatMessage/chat/${chatId}/messages`)
-      console.log('Chat Message Fteched from getChatMessages', response.data.data)
+      const response = await axios.get(`https://chatapp-bolum-backend.onrender.com/api/v1/chatMessage/chat/${chatId}/messages`)
+      // console.log('Chat Message Fteched from getChatMessages', response.data.data)
       setMessageCollection(response.data.data)
     } catch (err) {
       console.log('message retrieval failed for chat', err)
@@ -109,8 +109,8 @@ function ChatApp({ }) {
   // getting chat or if not then creating it and also getting messages inside it 
   const findOrCreateChatAndGetAllMessages = async (friendId) => {
     try {
-      const response = await axios.get(`/api/v1/chat/find-or-create-chat-getAllMessages?friendId=${friendId}`)
-      console.log("Chat and Message Fetched from findOrCreateChatAndGetAllMessages", response.data.data)
+      const response = await axios.get(`https://chatapp-bolum-backend.onrender.com/api/v1/chat/find-or-create-chat-getAllMessages?friendId=${friendId}`)
+      // console.log("Chat and Message Fetched from findOrCreateChatAndGetAllMessages", response.data.data)
       setMessageCollection(response.data.data)
     } catch (err) {
       console.log('Error occured at findOrCreateChatAndGetAllMessages' , err)
@@ -121,13 +121,13 @@ function ChatApp({ }) {
   const handleMessageInjector = async (e) => {
     e.preventDefault();
      if (content.trim() === "") return; // Don't send if message is empty
-    console.log('Try : Message sent from',currentUser?.fullname,' to ',user?.fullname,' withcontent ',content)
+    // console.log('Try : Message sent from',currentUser?.fullname,' to ',user?.fullname,' withcontent ',content)
     socket?.emit('send-message', {
       senderId : currentUser._id,
       receiverId : friendId,
       content : content
     })
-    console.log('Message sent from', currentUser?.fullname, 'to', user?.fullname)
+    // console.log('Message sent from', currentUser?.fullname, 'to', user?.fullname)
     setContent('')
     await findOrCreateChatAndGetAllMessages(friendId)
   }

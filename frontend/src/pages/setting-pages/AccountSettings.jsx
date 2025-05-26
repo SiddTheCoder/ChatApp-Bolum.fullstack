@@ -12,8 +12,7 @@ function AccountSettings() {
 
   const logoutUser = async () => {
     try {
-      const response = await axios.get('/api/v1/user/logout-user', {}, { withCredentials: true })
-      console.log(response)
+      const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/user/logout-user', {}, { withCredentials: true })
       navigate('/')
     } catch (error) {
       console.log('error occured while Logouting the user account',error)
@@ -22,8 +21,8 @@ function AccountSettings() {
 
   const deleteUserAccount = async () => {
     try {
-      const response = await axios.post('/api/v1/user/delete-user-account', {}, { withCredentials: true })
-      console.log(response)
+      const response = await axios.post('https://chatapp-bolum-backend.onrender.com/api/v1/user/delete-user-account', {}, { withCredentials: true })
+      // console.log(response)
       navigate('/')
     } catch (error) {
       console.log('error occured while deleting the user account',error)

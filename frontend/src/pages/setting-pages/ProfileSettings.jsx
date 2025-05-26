@@ -85,7 +85,7 @@ const ProfileSettings = () => {
 
   const getUserById = async () => {
     try {
-      const response = await axios.get('/api/v1/user/get-user-by-id', { withCredentials: true });
+      const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-by-id', { withCredentials: true });
       setUser(response.data?.data);
       setFormData((prev) => ({
         ...prev,
@@ -131,7 +131,7 @@ const ProfileSettings = () => {
     });
   
     try {
-      const response = await axios.post('/api/v1/user/update-user-credentials', data, {
+      const response = await axios.post('https://chatapp-bolum-backend.onrender.com/api/v1/user/update-user-credentials', data, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data',
