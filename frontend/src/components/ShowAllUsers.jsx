@@ -107,7 +107,7 @@ function ShowAllUsers() {
         receiverId: user._id
       })
     }
-    await axios.post(`https://chatapp-bolum-backend.onrender.com/api/v1/user/add-friend-request?requestGetterId=${user._id}`, {
+    await axios.post(`https://chatapp-bolum-backend.onrender.com/api/v1/user/add-friend-request?requestGetterId=${user._id}`,{}, {
       withCredentials: true
     })
   }
@@ -119,7 +119,7 @@ function ShowAllUsers() {
         receiverId: user._id
       })
     }
-    await axios.post(`https://chatapp-bolum-backend.onrender.com/api/v1/user/cancel-friend-request?requestGetterId=${user._id}`, {
+    await axios.post(`https://chatapp-bolum-backend.onrender.com/api/v1/user/cancel-friend-request?requestGetterId=${user._id}`, {}, {
       withCredentials: true
     })
   }
