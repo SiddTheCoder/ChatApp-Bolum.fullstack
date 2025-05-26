@@ -101,6 +101,10 @@ function ShowAllUsers() {
   }
 
   const sendFriendRequest = async (user) => {
+    if (!currentUser?._id) {
+      console.warn("User not logged in.")
+      return
+    }
     if (socket) {
       socket.emit('send-friend-request', {
         senderId: currentUser._id,

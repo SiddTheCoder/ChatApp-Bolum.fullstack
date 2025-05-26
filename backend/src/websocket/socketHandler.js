@@ -51,6 +51,8 @@ export function setupSocket(io) {
       
       const receiverSocketId = connectedUsers.get(receiverId);
       if (receiverSocketId) {
+        console.log(`User ${receiverId} is connected with socket ID: ${receiverSocketId}`);
+        // Emit the event to the receiver
         io.to(receiverSocketId).emit('friend-request-received', {
           from: senderId,
         });

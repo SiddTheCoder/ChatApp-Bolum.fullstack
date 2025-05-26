@@ -43,10 +43,11 @@ function Header() {
   useEffect(() => {
     getUnSeenNotifications()
     socket?.on('friend-request-received', () => {
+      console.log('Friend Request received')
       setNotificationCount((prev) => prev+1)
     })
     socket?.on('cancelled-friend-request', () => {
-      // console.log('Friend Request cancelled')
+      console.log('Friend Request cancelled')
       setNotificationCount((prev) => prev-1)
     })
 
@@ -56,7 +57,7 @@ function Header() {
     })
 
     socket?.on('rejected-friend-request', () => {
-      // console.log('Friend Request Rejected')
+      console.log('Friend Request Rejected')
       setNotificationCount((prev) => prev+1)
     })
   } , [currentUser])
