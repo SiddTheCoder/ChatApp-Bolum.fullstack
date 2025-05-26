@@ -11,7 +11,7 @@ function ShowAllUsers() {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const currentUser = useAuth()
+  const {currentUser} = useAuth()
   const { socket } = useSocket()
 
   const getAllUsers = async () => {

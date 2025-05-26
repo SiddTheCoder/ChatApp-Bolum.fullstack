@@ -9,7 +9,7 @@ import {House} from 'lucide-react'
 function Sidebar() {
   const navigate = useNavigate()
   const { socket } = useSocket()
-  const currentUser = useAuth()
+  const {currentUser} = useAuth()
   const [friends, setFriends] = useState([])
   const [latestMessages, setLatestMessages] = useState({});
   

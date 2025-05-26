@@ -1,10 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PageBacker from '../../components/semi-components/PageBacker';
 import axios from 'axios';
+import { useAuth } from '../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileSettings = () => {
+  const navigate = useNavigate()
+  const {currentUser,loading} = useAuth()
+  const [isUpdatingUserCredentials,setIsUpdatingUserCredentials] = useState(false)
   const inputFiles = useRef(null);
   const [user, setUser] = useState({});
+  const [message,setMessage] = useState('')
+
   const [formData, setFormData] = useState({
     username: '',
     fullname: '',
@@ -93,20 +100,65 @@ const ProfileSettings = () => {
     }
   };
 
+ 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log('hgb',formData); 
+  
+    // Check for empty required fields BEFORE appending to FormData
+    if ([formData.username, formData.fullname, formData.email].some(field => !field || field.trim() === '')) {
+      setMessage('Required fields cannot be empty');
+      setTimeout(() => {
+        setMessage('')
+      }, 3000);
+      return;
+    }
+  
+    setIsUpdatingUserCredentials(true);
+  
+    const data = new FormData();
+    data.append('username', formData.username);
+    data.append('fullname', formData.fullname);
+    data.append('password', formData.password);
+    data.append('email', formData.email);
+    data.append('bio', formData.bio);
+  
+    if (inputFiles.current && inputFiles.current.files[0]) {
+      data.append('avatar', inputFiles.current.files[0]);
+    }
+  
+    formData.socialHandles.forEach((handle, index) => {
+      data.append(`socialHandles[${index}]`, handle);
+    });
+  
+    try {
+      const response = await axios.post('/api/v1/user/update-user-credentials', data, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setFormData((prev) => ({ ...prev, ...response.data?.data }));
+      setIsUpdatingUserCredentials(false);
+    } catch (error) {
+      console.log('Error occurred while updating user credentials', error.response?.data);
+      setMessage(error.response?.data.message);
+      setIsUpdatingUserCredentials(false);
+    }
   };
+  
 
   useEffect(() => {
-    getUserById();
-  }, []);
+    if (!loading) {
+      setFormData((prev)=> ({...prev, ...currentUser}))
+    }
+  }, [loading]);
+
 
   return (
     <>
       <div className=""><PageBacker className={'ml-5'} /></div>
 
-      <form onSubmit={handleFormSubmit} className="min-h-[95vh] bg-gray-200 flex flex-col md:flex-row justify-center items-start p-6 gap-6">
+      <form onSubmit={handleFormSubmit} className="min-h-[95vh] bg-gray-200 flex flex-col md:flex-row justify-center items-start p-6 gap-6" encType="multipart/form-data">
         
         {/* Left Panel */}
         <div className="bg-white rounded-lg shadow-lg p-6 w-full md:w-80 flex flex-col items-center text-center">
@@ -130,12 +182,11 @@ const ProfileSettings = () => {
           </label>
 
           <div className="text-sm text-gray-600 mt-3 p-2 bg-gray-100 rounded">
-            <p>Upload a new avatar. Larger image will be resized automatically.</p>
-            <p><strong>Maximum upload size is 1 MB</strong></p>
+            <p><strong>{ formData?.bio}</strong></p>
           </div>
 
           <p className="text-sm text-gray-500 mt-4">
-            Member Since: <strong>{new Date(user?.createdAt).toLocaleString('en-US', { month: 'long', year: 'numeric' })}</strong>
+            Member Since: <strong>{new Date(formData?.createdAt).toLocaleString('en-US', { month: 'long', year: 'numeric' })}</strong>
           </p>
         </div>
 
@@ -204,6 +255,7 @@ const ProfileSettings = () => {
                 type="email"
                 className="mt-1 w-full p-2 border rounded"
                 value={formData.email}
+                onChange={handleInputChange}
               />
             </div>
 
@@ -235,9 +287,11 @@ const ProfileSettings = () => {
               />
             </div>
 
+            <div className='h-2 w-96 text-red-500'>{message ? message : ''}</div>
+
             <div className="col-span-1 md:col-span-2 mt-4">
               <button type="submit" className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600">
-                Update Info
+                {!isUpdatingUserCredentials ? 'Update Info' : 'Our Bot is busy updating your credentials'}
               </button>
             </div>
           </div>

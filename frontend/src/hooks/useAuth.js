@@ -14,14 +14,16 @@ const getCurrentUser = async () => {
   
 export const useAuth = () => {
   const [currentUser, setCurrentUser] = useState(null)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await getCurrentUser()
       setCurrentUser(userData)
+      setLoading(false)
     }
     fetchUser()
   }, [])
 
-  return currentUser
+  return {currentUser,loading}
 }

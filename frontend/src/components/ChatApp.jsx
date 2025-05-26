@@ -15,7 +15,7 @@ function ChatApp({ }) {
   const navigate = useNavigate()
   const { friendId } = useParams()
   const { socket } = useSocket()
-  const currentUser = useAuth()
+  const {currentUser} = useAuth()
   const [user, setUser] = useState(null)
   const [content, setContent] = useState('')
   const messagesEndRef = useRef(null);

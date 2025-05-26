@@ -345,6 +345,57 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
   res.status(200).json(friendsWithLatestMessage);
 });
 
+const updateUserCredentials = asyncHandler(async (req, res) => {
+  const { username, email, password, fullname, bio, socialHandles = [] } = req.body;
+
+  // Validate required fields
+  if ([username, email, fullname, bio].some(field => !field || field.trim() === '')) {
+    throw new ApiError(400, 'Fields cannot be empty');
+  }
+
+  // Handle file upload
+  const avatarLocalPath = req.file?.path;
+ 
+  let avatarUrl;
+  if (avatarLocalPath) {
+    const avatar = await uploadOnCloudinary(avatarLocalPath);
+    if (!avatar) {
+      throw new ApiError(500, 'Error occurred while uploading profile image');
+    }
+    avatarUrl = avatar.url;
+  }
+
+  // Build update object
+  const updateFields = {
+    username,
+    email,
+    password,
+    fullname,
+    bio,
+  };
+
+  if (avatarUrl) {
+    updateFields.avatar = avatarUrl;
+  }
+
+  // Update user
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    { $set: updateFields },
+    { new: true }
+  ).select('-password -refreshToken')
+
+  // Handle social handles
+  if (socialHandles.length > 0) {
+    user.socialHandles.push(...socialHandles);
+    await user.save();
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, user, 'User credentials updated successfully')
+  );
+});
+
 
 export {
   generateAccessAndRefreshToken,
@@ -361,5 +412,6 @@ export {
   getUserById,
   getUserFriendsWithLatestMessage,
   getUserByUserName,
-  deleteUser
+  deleteUser,
+  updateUserCredentials
 }

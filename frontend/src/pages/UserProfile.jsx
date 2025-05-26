@@ -8,7 +8,7 @@ import Header from '../components/Header'
 
 function UserProfile() {
   const { username } = useParams()
-  const currentUser = useAuth()
+  const {currentUser} = useAuth()
   const navigate = useNavigate()
 
   const [user, setUser] = useState({})
@@ -49,8 +49,8 @@ function UserProfile() {
       const response = await axios.get('/api/v1/user/logout-user', {}, {
         withCredentials: true
       })
-      console.log("User Logout", response)
-      console.log('Naviageting')
+      // console.log("User Logout", response)
+      // console.log('Naviageting')
       navigate('/')
       if (response.data?.status ==+ 200 || response.data?.statusText === 'OK') {
       }
@@ -91,7 +91,7 @@ function UserProfile() {
             <p className="mt-2 text-white/80">{user?.bio}</p>
             <p className="mt-1 text-sm text-white/60">{user?.email}</p>
             <div className="mt-2 flex w-full">
-               {isUserAuthenticated && <span className="inline-block px-3 py-1 cursor-pointer hover:bg-gradient-to-br from-purple-400 to-blue-600 bg-gradient-to-bl transition-all duration-300 ease-in-out  border-2  text-sm rounded-full">
+               {isUserAuthenticated && <span onClick={() => navigate('settings/profile')} className="inline-block px-3 py-1 cursor-pointer hover:bg-gradient-to-br from-purple-400 to-blue-600 bg-gradient-to-bl transition-all duration-300 ease-in-out  border-2  text-sm rounded-full">
                   Edit Profile
                </span>
                }

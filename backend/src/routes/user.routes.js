@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { upload } from "../middlewares/multer.moddleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+// import { upload } from "../middlewares/multer.moddleware.js";
 import {
   loginUser,
   registerUser,
@@ -15,7 +16,8 @@ import {
   getUserById,
   getUserFriendsWithLatestMessage,
   getUserByUserName,
-  deleteUser
+  deleteUser,
+  updateUserCredentials
 } from '../controllers/user.controller.js'
 
 
@@ -36,6 +38,7 @@ router.route('/get-current-user').get(verifyJWT, getCurrentUser)
 router.route('/get-user-all-freinds').get(verifyJWT, getUserAllFriends)
 router.route('/get-user-friends-withLatest-messages').get(verifyJWT, getUserFriendsWithLatestMessage)
 router.route('/delete-user-account').post(verifyJWT,deleteUser)
+router.route('/update-user-credentials').post(upload.single('avatar'),verifyJWT,updateUserCredentials)
 
 //friend request (secured routes)
 router.route('/add-friend-request').post(verifyJWT,addFriendRequest)

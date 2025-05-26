@@ -19,7 +19,7 @@ function Header() {
   // FORM CONTEXT API HOOK
   const { socket } = useSocket()
   // FROM HOOK
-  const currentUser = useAuth()
+  const {currentUser} = useAuth()
   
 
 

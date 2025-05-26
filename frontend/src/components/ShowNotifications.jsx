@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth'
 function ShowNotifications({ closeModel, isOpen }) {
   
   const {socket} = useSocket()
-  const currentUser = useAuth()
+  const {currentUser} = useAuth()
   const [notifications, setNotications] = useState([])
 
   
