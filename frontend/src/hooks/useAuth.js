@@ -3,7 +3,7 @@ import { useState,useEffect } from 'react'
 
 const getCurrentUser = async () => {
     try {
-      const response = await axios.get('/api/v1/user/get-current-user', {
+      const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/user/get-current-user', {
         withCredentials : true
       })
       return response.data.data
