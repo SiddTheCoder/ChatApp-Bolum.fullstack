@@ -42,7 +42,7 @@ function Login() {
   const loginUser = async () => {
     try {
       setIsLogging(true)
-      const response = await axios.post('/api/v1/user/login-user', formData, {
+      const response = await axios.post('https://chatapp-bolum-backend.onrender.com/api/v1/user/login-user', formData, {
         withCredentials: true,
         headers: { 'Content-Type': 'application/json' }
       })
