@@ -399,14 +399,14 @@ const updateUserCredentials = asyncHandler(async (req, res) => {
   }
 
   // Update user
-  const user = await User.findByIdAndUpdate(
+  const user = await User.findByIdAndUpdate(  
     req.user?._id,
     { $set: updateFields },
     { new: true }
   ).select('-password -refreshToken')
 
   // Handle social handles
-  if (socialHandles.length > 0) {
+  if (socialHandles?.length > 0) {
     user.socialHandles.push(...socialHandles);
     await user.save();
   }
