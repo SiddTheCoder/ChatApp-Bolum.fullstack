@@ -27,6 +27,8 @@ function ShowNotifications({ closeModel, isOpen }) {
 
   const handleFriendRequestAccept = async (notification) => {
     if (socket) {
+      console.log('Accepting friend request', notification)
+      console.log('Current User', currentUser)
       socket.emit('accept-friend-request', {
         senderId: currentUser?._id ,
         receiverId: notification?.sender?._id,
@@ -36,7 +38,7 @@ function ShowNotifications({ closeModel, isOpen }) {
     
     //database handling
     try {
-     const response =  await axios.post(`/api/v1/user/accept-friend-request?anotheruserId=${notification?.sender?._id}`, {
+      const response = await axios.post(`https://chatapp-bolum-backend.onrender.com/api/v1/user/accept-friend-request?anotheruserId=${notification?.sender?._id}`, {}, {
         withCredentials : true
       })
       console.log('Friend Request accepted and Added friend in databse', response.data.data)
@@ -50,6 +52,8 @@ function ShowNotifications({ closeModel, isOpen }) {
 
   const handleFriendRequestReject = async (notification) => {
     if (socket) {
+      console.log('Rejecting friend request', notification)
+      console.log('Current User', currentUser)
       socket.emit('reject-friend-request', {
         senderId: currentUser?._id ,
         receiverId: notification?.sender?._id,
@@ -60,11 +64,11 @@ function ShowNotifications({ closeModel, isOpen }) {
   }
 
   const updateNotificationStatus = async (notification) => {
-    console.log("Trying to update the notification status", notification)
-    const response = await axios.post(`/api/v1/notification/update-notification-status?notificationId=${notification?._id}`, {
+    // console.log("Trying to update the notification status", notification)
+    const response = await axios.post(`https://chatapp-bolum-backend.onrender.com/api/v1/notification/update-notification-status?notificationId=${notification?._id}`,{}, {
       withCredentials : true
     })
-    console.log('Notification status updated', response.data.data)
+    // console.log('Notification status updated', response.data.data)
   }
 
   
