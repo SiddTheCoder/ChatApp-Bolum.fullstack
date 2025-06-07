@@ -41,6 +41,7 @@ function Login() {
 
   const loginUser = async () => {
     try {
+      console.log('Logging in with:', formData)
       setIsLogging(true)
       const response = await axios.post('https://chatapp-bolum-backend.onrender.com/api/v1/user/login-user', formData, {
         withCredentials: true,
@@ -53,6 +54,7 @@ function Login() {
       setIsLogging(false)
       const message = error.response?.data?.message
       setErrorMessage(message)
+      console.log(error)
       return message
     }
   }
