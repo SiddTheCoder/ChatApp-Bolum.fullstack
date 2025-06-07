@@ -255,10 +255,8 @@ const ProfileSettings = () => {
                 type="password"
                 className="mt-1 w-full p-2 border rounded"
                 placeholder="**********"
-                value={formData.password[0]}
-                onchange={(e) => handleInputChange(
-                  { target: { name: 'password', value: [e.target.value, formData.password[1]] } }
-                )} 
+                value={formData.oldPassword}
+                onchange={handleInputChange} 
               />
             </div>
             <div>
@@ -268,8 +266,8 @@ const ProfileSettings = () => {
                 className="mt-1 w-full p-2 border rounded"
                 type='password'
                 placeholder="**********"
-                onChange={(e) => handleInputChange({ target: { name: 'password', value: [formData.password[0], e.target.value] } })}
-                value={formData.password[1]}
+                onChange={handleInputChange}
+                value={formData.newPassword}
               />
             </div>
             <div>
