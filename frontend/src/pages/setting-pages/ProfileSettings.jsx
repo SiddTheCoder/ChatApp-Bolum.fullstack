@@ -5,12 +5,12 @@ import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 const ProfileSettings = () => {
-  const navigate = useNavigate()
-  const {currentUser,loading} = useAuth()
-  const [isUpdatingUserCredentials,setIsUpdatingUserCredentials] = useState(false)
+  const navigate = useNavigate();
+  const { currentUser, loading } = useAuth();
+  const [isUpdatingUserCredentials, setIsUpdatingUserCredentials] = useState(false);
   const inputFiles = useRef(null);
   const [user, setUser] = useState({});
-  const [message,setMessage] = useState('')
+  const [message, setMessage] = useState('');
 
   const [formData, setFormData] = useState({
     username: '',
@@ -21,6 +21,7 @@ const ProfileSettings = () => {
     socialHandles: ['', ''],
     bio: '',
     avatar: null,
+    createdAt: ''
   });
 
   const handleInputChange = (e) => {
@@ -43,111 +44,66 @@ const ProfileSettings = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = new Image();
-        img.src = event.target.result;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          let width = img.width;
-          let height = img.height;
-          const maxSize = 1024;
-
-          if (width > height) {
-            if (width > maxSize) {
-              height *= maxSize / width;
-              width = maxSize;
-            }
-          } else {
-            if (height > maxSize) {
-              width *= maxSize / height;
-              height = maxSize;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          ctx.drawImage(img, 0, 0, width, height);
-
-          let quality = 0.8;
-          let compressedDataURL = canvas.toDataURL('image/jpeg', quality);
-          while (compressedDataURL.length > 200 * 1024 && quality > 0.2) {
-            quality -= 0.1;
-            compressedDataURL = canvas.toDataURL('image/jpeg', quality);
-          }
-
-          setFormData((prev) => ({ ...prev, avatar: compressedDataURL }));
-        };
-      };
-      reader.readAsDataURL(file);
+      setFormData((prev) => ({ ...prev, avatar: URL.createObjectURL(file) }));
     }
   };
 
   const getUserById = async () => {
     try {
       const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-by-id', { withCredentials: true });
-      setUser(response.data?.data);
+      const data = response.data?.data;
+      setUser(data);
       setFormData((prev) => ({
         ...prev,
-        fullname: response.data?.data?.fullname || '',
-        username: response.data?.data?.username || '',
-        email: response.data?.data?.email || '',
-        avatar: response.data?.data?.avatar || null,
-        bio: response.data?.data?.bio || '',
+        fullname: data?.fullname || '',
+        username: data?.username || '',
+        email: data?.email || '',
+        avatar: data?.avatar || null,
+        bio: data?.bio || '',
+        socialHandles: data?.socialHandles || ['', ''],
+        createdAt: data?.createdAt || '',
       }));
     } catch (error) {
       console.error('Error fetching user', error);
     }
   };
 
- 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-  
-    // Check for empty required fields BEFORE appending to FormData
+
     if ([formData.username, formData.fullname, formData.email].some(field => !field || field.trim() === '')) {
       setMessage('Required fields cannot be empty');
-      setTimeout(() => {
-        setMessage('')
-      }, 3000);
+      setTimeout(() => setMessage(''), 3000);
       return;
     }
-  
+
+    if ((formData.oldPassword && !formData.newPassword) || (!formData.oldPassword && formData.newPassword)) {
+      setMessage('Both old and new passwords must be provided');
+      setTimeout(() => setMessage(''), 3000);
+      return;
+    }
+
     setIsUpdatingUserCredentials(true);
-  
+
     const data = new FormData();
     data.append('username', formData.username);
     data.append('fullname', formData.fullname);
     data.append('email', formData.email);
     data.append('bio', formData.bio);
 
-    if(formData.oldPassword || formData.newPassword) {
-      // Validate that both old and new passwords are provided if one is given
-      if (!formData.oldPassword || !formData.newPassword) {
-        setMessage('Both old and new passwords must be provided if changing password');
-        setIsUpdatingUserCredentials(false);
-        setTimeout(() => {
-          setMessage('')
-        }, 3000);
-        return;
-      }
-    }
-
-    // Append old and new passwords only if they are provided
-    if(formData.oldPassword && formData.newPassword) {
-      data.append('oldPassword', formData.oldPassword); 
+    if (formData.oldPassword && formData.newPassword) {
+      data.append('oldPassword', formData.oldPassword);
       data.append('newPassword', formData.newPassword);
     }
-  
+
     if (inputFiles.current && inputFiles.current.files[0]) {
       data.append('avatar', inputFiles.current.files[0]);
     }
-  
+
     formData.socialHandles.forEach((handle, index) => {
       data.append(`socialHandles[${index}]`, handle);
     });
-  
+
     try {
       const response = await axios.post('https://chatapp-bolum-backend.onrender.com/api/v1/user/update-user-credentials', data, {
         withCredentials: true,
@@ -155,37 +111,29 @@ const ProfileSettings = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+
       setFormData((prev) => ({ ...prev, ...response.data?.data }));
-      setIsUpdatingUserCredentials(false);
-      console.log('User credentials updated successfully', response.data);
       setMessage('User credentials updated successfully');
-      setTimeout(() => {
-        setMessage('')
-      }, 3000);
     } catch (error) {
-      console.log('Error occurred while updating user credentials', error.response?.data);
-      setMessage(error.response?.data.message);
+      console.error('Update failed:', error);
+      setMessage(error.response?.data?.message || 'Update failed');
+    } finally {
       setIsUpdatingUserCredentials(false);
-      setTimeout(() => {
-        setMessage('')
-      }, 3000);
+      setTimeout(() => setMessage(''), 3000);
     }
   };
-  
 
   useEffect(() => {
     if (!loading) {
-      setFormData((prev)=> ({...prev, ...currentUser}))
+      getUserById();
     }
   }, [loading]);
-
 
   return (
     <>
       <div className=""><PageBacker className={'ml-5'} /></div>
 
       <form onSubmit={handleFormSubmit} className="min-h-[95vh] bg-gray-200 flex flex-col md:flex-row justify-center items-start p-6 gap-6" encType="multipart/form-data">
-        
         {/* Left Panel */}
         <div className="bg-white rounded-lg shadow-lg p-6 w-full md:w-80 flex flex-col items-center text-center">
           <img
@@ -193,8 +141,8 @@ const ProfileSettings = () => {
             alt="User Avatar"
             className="w-28 h-28 rounded-full object-cover mb-4"
           />
-          <h2 className="text-lg font-semibold">{user?.fullname}</h2>
-          <p className="text-sm text-gray-500">{user?.email}</p>
+          <h2 className="text-lg font-semibold">{formData?.fullname}</h2>
+          <p className="text-sm text-gray-500">{formData?.email}</p>
 
           <label className="cursor-pointer bg-red-500 text-white px-4 py-2 mt-4 rounded hover:bg-red-600 relative">
             Upload New Photo
@@ -208,11 +156,11 @@ const ProfileSettings = () => {
           </label>
 
           <div className="text-sm text-gray-600 mt-3 p-2 bg-gray-100 rounded">
-            <p><strong>{ formData?.bio}</strong></p>
+            <p><strong>{formData?.bio}</strong></p>
           </div>
 
           <p className="text-sm text-gray-500 mt-4">
-            Member Since: <strong>{new Date(formData?.createdAt).toLocaleString('en-US', { month: 'long', year: 'numeric' })}</strong>
+            Member Since: <strong>{formData.createdAt ? new Date(formData.createdAt).toLocaleString('en-US', { month: 'long', year: 'numeric' }) : 'N/A'}</strong>
           </p>
         </div>
 
@@ -251,12 +199,11 @@ const ProfileSettings = () => {
               <label className="block text-sm font-medium">Old Password</label>
               <input
                 name="oldPassword"
-                onChange={handlePasswordChange}
+                onChange={handleInputChange}
                 type="password"
                 className="mt-1 w-full p-2 border rounded"
                 placeholder="**********"
                 value={formData.oldPassword}
-                onchange={handleInputChange} 
               />
             </div>
             <div>
@@ -264,7 +211,7 @@ const ProfileSettings = () => {
               <input
                 name="newPassword"
                 className="mt-1 w-full p-2 border rounded"
-                type='password'
+                type="password"
                 placeholder="**********"
                 onChange={handleInputChange}
                 value={formData.newPassword}
@@ -278,15 +225,6 @@ const ProfileSettings = () => {
                 type="email"
                 className="mt-1 w-full p-2 border rounded"
                 value={formData.email}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Confirm Email Address</label>
-              <input
-                type="email"
-                className="mt-1 w-full p-2 border rounded"
-                value={formData.email}
-                onChange={handleInputChange}
               />
             </div>
 
@@ -318,11 +256,17 @@ const ProfileSettings = () => {
               />
             </div>
 
-            <div className='h-2 w-96 text-red-500'>{message ? message : ''}</div>
+            <div className="col-span-1 md:col-span-2 mt-2 text-red-500">
+              {message && <p>{message}</p>}
+            </div>
 
             <div className="col-span-1 md:col-span-2 mt-4">
-              <button type="submit" className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600">
-                {!isUpdatingUserCredentials ? 'Update Info' : 'Our Bot is busy updating your credentials'}
+              <button
+                type="submit"
+                className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 disabled:opacity-50"
+                disabled={isUpdatingUserCredentials}
+              >
+                {isUpdatingUserCredentials ? 'Updating...' : 'Update Info'}
               </button>
             </div>
           </div>
