@@ -47,6 +47,7 @@ function Register() {
       })
       navigate('/home')
     } catch (error) {
+      console.log(error)
       setIsRegistering(false)
     }
   }
