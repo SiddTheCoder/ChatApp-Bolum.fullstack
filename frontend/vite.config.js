@@ -7,13 +7,13 @@ const backendUrl = 'https://chatapp-bolum-backend.onrender.com';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  server: {
-    proxy: {
-      '/api/v1': {
-        target: backendUrl,
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  },
+  // server: {
+  //   proxy: {
+  //     '/api/v1': {
+  //       target: backendUrl,
+  //       changeOrigin: true,
+  //       secure: false,
+  //     },
+  //   },
+  // },
 })

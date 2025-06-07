@@ -47,8 +47,18 @@ function Register() {
       })
       navigate('/home')
     } catch (error) {
-      console.log(error)
+      console.error(error)
       setIsRegistering(false)
+
+      if (error.message === 'Network Error') {
+        setErrorMessage('Network error: Check your internet connection.')
+      } else if (error.code === 'ECONNABORTED') {
+        setErrorMessage('Request timed out. Try again.')
+      } else {
+        setErrorMessage(error.response?.data?.message || 'Something went wrong!')
+      }
+
+      setTimeout(() => setErrorMessage(null), 3000)
     }
   }
 
