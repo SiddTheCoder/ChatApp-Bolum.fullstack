@@ -15,7 +15,8 @@ const ProfileSettings = () => {
   const [formData, setFormData] = useState({
     username: '',
     fullname: '',
-    password: '',
+    oldPassword: '',
+    newPassword: '',
     email: '',
     socialHandles: ['', ''],
     bio: '',
@@ -118,9 +119,26 @@ const ProfileSettings = () => {
     const data = new FormData();
     data.append('username', formData.username);
     data.append('fullname', formData.fullname);
-    data.append('password', formData.password);
     data.append('email', formData.email);
     data.append('bio', formData.bio);
+
+    if(formData.oldPassword || formData.newPassword) {
+      // Validate that both old and new passwords are provided if one is given
+      if (!formData.oldPassword || !formData.newPassword) {
+        setMessage('Both old and new passwords must be provided if changing password');
+        setIsUpdatingUserCredentials(false);
+        setTimeout(() => {
+          setMessage('')
+        }, 3000);
+        return;
+      }
+    }
+
+    // Append old and new passwords only if they are provided
+    if(formData.oldPassword && formData.newPassword) {
+      data.append('oldPassword', formData.oldPassword); 
+      data.append('newPassword', formData.newPassword);
+    }
   
     if (inputFiles.current && inputFiles.current.files[0]) {
       data.append('avatar', inputFiles.current.files[0]);
@@ -139,10 +157,18 @@ const ProfileSettings = () => {
       });
       setFormData((prev) => ({ ...prev, ...response.data?.data }));
       setIsUpdatingUserCredentials(false);
+      console.log('User credentials updated successfully', response.data);
+      setMessage('User credentials updated successfully');
+      setTimeout(() => {
+        setMessage('')
+      }, 3000);
     } catch (error) {
       console.log('Error occurred while updating user credentials', error.response?.data);
       setMessage(error.response?.data.message);
       setIsUpdatingUserCredentials(false);
+      setTimeout(() => {
+        setMessage('')
+      }, 3000);
     }
   };
   
@@ -222,21 +248,28 @@ const ProfileSettings = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Password</label>
+              <label className="block text-sm font-medium">Old Password</label>
               <input
-                name="password"
-                onChange={handleInputChange}
+                name="oldPassword"
+                onChange={handlePasswordChange}
                 type="password"
                 className="mt-1 w-full p-2 border rounded"
                 placeholder="**********"
+                value={formData.password[0]}
+                onchange={(e) => handleInputChange(
+                  { target: { name: 'password', value: [e.target.value, formData.password[1]] } }
+                )} 
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Confirm Password</label>
+              <label className="block text-sm font-medium">New Password</label>
               <input
-                type="password"
+                name="newPassword"
                 className="mt-1 w-full p-2 border rounded"
+                type='password'
                 placeholder="**********"
+                onChange={(e) => handleInputChange({ target: { name: 'password', value: [formData.password[0], e.target.value] } })}
+                value={formData.password[1]}
               />
             </div>
             <div>

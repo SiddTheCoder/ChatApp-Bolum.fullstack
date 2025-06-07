@@ -346,10 +346,10 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
 });
 
 const updateUserCredentials = asyncHandler(async (req, res) => {
-  const { username, email, password, fullname, bio, socialHandles = [] } = req.body;
+  const { username, email, oldPassword, newPassowrd, fullname, bio, socialHandles } = req.body;
 
   // Validate required fields
-  if ([username, email, fullname, bio].some(field => !field || field.trim() === '')) {
+  if ([username, email, fullname].some(field => !field || field.trim() === '')) {
     throw new ApiError(400, 'Fields cannot be empty');
   }
 
@@ -365,11 +365,31 @@ const updateUserCredentials = asyncHandler(async (req, res) => {
     avatarUrl = avatar.url;
   }
 
+  // password validation
+  if( oldPassword && newPassowrd) {
+    if (newPassowrd.length < 2) {
+      throw new ApiError(400, 'Password must be at least 6 characters long');
+    }
+
+    const user = await User.findById(req.user?._id);
+    if (!user) {
+      throw new ApiError(404, 'User not found');
+    }
+
+    const isPasswordValid = await user.isPasswordCorrect(oldPassword);
+    if (!isPasswordValid) {
+      throw new ApiError(401, 'Old password is incorrect');
+    }
+
+    // Update password
+    user.password = newPassowrd;
+    await user.save();
+  }
+
   // Build update object
   const updateFields = {
     username,
     email,
-    password,
     fullname,
     bio,
   };
