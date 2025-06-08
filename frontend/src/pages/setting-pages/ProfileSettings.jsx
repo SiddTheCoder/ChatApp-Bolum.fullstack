@@ -113,7 +113,9 @@ const ProfileSettings = () => {
       });
 
       setFormData((prev) => ({ ...prev, ...response.data?.data }));
-      setMessage('User credentials updated successfully');
+      if(response.data?.data?.statuCode === 200) {
+        setMessage('Profile updated successfully');
+      }
     } catch (error) {
       console.error('Update failed:', error);
       setMessage(error.response?.data?.message || 'Update failed');
