@@ -116,6 +116,7 @@ const ProfileSettings = () => {
       if(response.data?.data?.statuCode === 200) {
         setMessage('Profile updated successfully');
       }
+      console.log('Update successful:', response.data);
     } catch (error) {
       console.error('Update failed:', error);
       setMessage(error.response?.data?.message || 'Update failed');
