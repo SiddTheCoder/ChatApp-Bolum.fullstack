@@ -11,6 +11,8 @@ const ProfileSettings = () => {
   const inputFiles = useRef(null);
   const [user, setUser] = useState({});
   const [message, setMessage] = useState('');
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const bioRef = useRef(null);
 
   const [formData, setFormData] = useState({
     username: '',
@@ -133,6 +135,19 @@ const ProfileSettings = () => {
     }
   }, [loading]);
 
+  // for handling bio editing
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (bioRef.current && !bioRef.current.contains(e.target)) {
+        setIsEditingBio(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  
   return (
     <>
       <div className=""><PageBacker className={'ml-5'} /></div>
@@ -159,8 +174,32 @@ const ProfileSettings = () => {
             />
           </label>
 
-          <div className="text-sm text-gray-600 mt-3 p-2 bg-gray-100 rounded">
-            <p><strong>{formData?.bio}</strong></p>
+          <div className="relative group w-[90%]">
+            <div
+              ref={bioRef}
+              className="text-sm text-gray-600 mt-3 p-2 bg-gray-100 rounded cursor-pointer"
+              onDoubleClick={() => setIsEditingBio(true)}
+            >
+              {isEditingBio ? (
+                <textarea
+                  name="bio"
+                  className="w-full p-2 border rounded resize-none"
+                  rows={3}
+                  value={formData.bio}
+                  onChange={handleInputChange}
+                  autoFocus
+                />
+              ) : (
+                <p><strong>{formData?.bio || "Double click to add bio"}</strong></p>
+              )}
+            </div>
+
+            {/* Tooltip */}
+            {!isEditingBio && (
+              <div className="absolute right-[50px] top-12 bg-purple-200 text-yellow-900 text-xs font-medium px-3 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                Double click to edit bio
+              </div>
+            )}
           </div>
 
           <p className="text-sm text-gray-500 mt-4">

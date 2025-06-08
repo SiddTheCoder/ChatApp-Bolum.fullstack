@@ -15,7 +15,7 @@ function Sidebar() {
   
   const getUserAllFriends = async () => {
     try {
-      const response = await axios.get('/api/v1/user/get-user-all-freinds', {}, {
+      const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-all-freinds', {}, {
         withCredentials : true
       })
       // console.log('Freinds fetched sc-----c', response.data.data?.friends)
@@ -47,13 +47,13 @@ function Sidebar() {
 
   const getUserFriendsWithTheirLatestMessages = async () => {
     try {
-      const response = await axios.get("https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-friends-withLatest-messages", {}, {
+      const response = await axios.get("https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-friends-withLatest-messages", {
         withCredentials : true
       })
-      // console.log('Friends with latest Message ', response.data)
+      console.log('Friends with latest Message ', response.data)
       setFriends(response.data)
     } catch (err) {
-      console.log('Error occured while fetching all friends with their latestMessage')
+      console.log('Error while fetching all friends with their latestMessage',err)
     }
   }
 
@@ -71,7 +71,7 @@ function Sidebar() {
       <div className='h-full w-full bg-transparent p-2 flex gap-3 flex-col'>
         {[...friends].reverse().map((friend) => (
           <div
-            onClick={() => navigate(`/home/chat/${friend._id}`)}
+            onClick={() => navigate(`/home/chat/${friend?._id}`)}
             key={friend._id}
             className={`h-12 w-full bg-white/90 rounded-md flex gap-1 shadow-2xl shadow-black cursor-pointer`}
 
@@ -85,7 +85,9 @@ function Sidebar() {
               <h1 className='text-[14px] font-semibold'>{friend.fullname}</h1>
             <div className='text-[12px] font-light flex gap-1 items-center'>
               <span ><CheckCheck size={15} /></span>
-              <span>{latestMessages[friend._id]?.content || friend?.lastMessage?.content || 'Type your first message👋'}</span>
+              <span className="truncate max-w-[150px] overflow-hidden whitespace-nowrap">
+                {latestMessages[friend._id]?.content || friend?.lastMessage?.content || 'Type your first message👋'}
+              </span>
             </div>
           </div>
         </div>

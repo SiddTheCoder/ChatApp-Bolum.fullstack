@@ -25,8 +25,11 @@ function ChatApp({ }) {
   // getting iser by id 
   const getUserById = async () => {
     try {
-      const response = await axios.get(`https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-by-id?userId=${friendId}`)
+      const response = await axios.get(`https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-by-id?userId=${friendId}`,
+        { withCredentials: true }
+      )
       setUser(response.data.data)
+      console.log('User friend  Fetched from getUserById', response.data.data)
     } catch (err) {
       console.log('Error occured while fetching the user by ID', err)
     }
@@ -109,7 +112,9 @@ function ChatApp({ }) {
   // getting chat or if not then creating it and also getting messages inside it 
   const findOrCreateChatAndGetAllMessages = async (friendId) => {
     try {
-      const response = await axios.get(`https://chatapp-bolum-backend.onrender.com/api/v1/chat/find-or-create-chat-getAllMessages?friendId=${friendId}`)
+      const response = await axios.get(`https://chatapp-bolum-backend.onrender.com/api/v1/chat/find-or-create-chat-getAllMessages?friendId=${friendId}`, {
+        withCredentials: true
+      })
       // console.log("Chat and Message Fetched from findOrCreateChatAndGetAllMessages", response.data.data)
       setMessageCollection(response.data.data)
     } catch (err) {

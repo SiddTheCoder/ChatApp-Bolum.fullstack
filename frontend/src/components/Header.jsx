@@ -35,8 +35,10 @@ function Header() {
 
   const getUnSeenNotifications = async () => {
     const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/notification/get-unseen-notifications-count', {
-      withcredentials : true
+      withCredentials : true
     })
+    console.log('Unseen Notifications Count', response.data)
+    // If the response is successful, update the notification count 
     setNotificationCount(response.data.data)
   }
 

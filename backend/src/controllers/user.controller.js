@@ -284,7 +284,13 @@ const getUserAllFriends = asyncHandler(async (req, res) => {
 
 const getUserById = asyncHandler(async (req, res) => {
  
-  const user = await User.findById(req.user?._id).select('-refreshToken -password')
+  const { userId } = req.query
+  
+  if (!userId) {
+    throw new ApiError(400,'User ID is required')
+  }
+  
+  const user = await User.findById(userId).select('-refreshToken -password')
 
   return res.status(200).json(new ApiResponse(200,user,'user Fteched Succesfully'))
 })

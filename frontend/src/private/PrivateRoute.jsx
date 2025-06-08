@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import axios from 'axios';
 import { SocketProvider } from '../context/SocketContext';
+import LoaderModal from '../components/LoaderModal';
 
 const PrivateRoute = () => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -25,7 +26,7 @@ const PrivateRoute = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoaderModal />;
   }
 
   if (!currentUser) {
