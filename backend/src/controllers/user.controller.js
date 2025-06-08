@@ -346,7 +346,7 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
 });
 
 const updateUserCredentials = asyncHandler(async (req, res) => {
-  const { username, email, oldPassword, newPassowrd, fullname, bio, socialHandles } = req.body;
+  const { username, email, oldPassword, newPassword, fullname, bio, socialHandles } = req.body;
 
   // Validate required fields
   if ([username, email, fullname].some(field => !field || field.trim() === '')) {
@@ -374,8 +374,8 @@ const updateUserCredentials = asyncHandler(async (req, res) => {
   }
 
   // password validation
-  if( oldPassword && newPassowrd) {
-    if (newPassowrd.length < 2) {
+  if( oldPassword && newPassword) {
+    if (newPassword.length < 2) {
       throw new ApiError(400, 'Password must be at least 6 characters long');
     }
 
@@ -390,7 +390,9 @@ const updateUserCredentials = asyncHandler(async (req, res) => {
     }
 
     // Update password
-    updateFields.password = newPassowrd;
+    // updateFields.password = newPassowrd;
+    user.password = newPassword;
+    await user.save();
   }
 
   if (avatarUrl) {
