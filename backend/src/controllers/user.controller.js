@@ -353,6 +353,14 @@ const updateUserCredentials = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Fields cannot be empty');
   }
 
+    // Build update object
+    const updateFields = {
+      username,
+      email,
+      fullname,
+      bio,
+    };
+
   // Handle file upload
   const avatarLocalPath = req.file?.path;
  
@@ -382,17 +390,8 @@ const updateUserCredentials = asyncHandler(async (req, res) => {
     }
 
     // Update password
-    user.password = newPassowrd;
-    await user.save();
+    updateFields.password = newPassowrd;
   }
-
-  // Build update object
-  const updateFields = {
-    username,
-    email,
-    fullname,
-    bio,
-  };
 
   if (avatarUrl) {
     updateFields.avatar = avatarUrl;

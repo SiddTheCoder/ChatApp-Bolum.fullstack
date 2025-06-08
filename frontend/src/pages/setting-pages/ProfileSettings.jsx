@@ -105,21 +105,22 @@ const ProfileSettings = () => {
     });
 
     try {
+      console.log('FormData:', data);
       const response = await axios.post('https://chatapp-bolum-backend.onrender.com/api/v1/user/update-user-credentials', data, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
       setFormData((prev) => ({ ...prev, ...response.data?.data }));
-      if(response.data?.data?.statuCode === 200) {
+      if(response.data?.statuscode === 200) {
         setMessage('Profile updated successfully');
       }
       console.log('Update successful:', response.data);
     } catch (error) {
       console.error('Update failed:', error);
       setMessage(error.response?.data?.message || 'Update failed');
+
     } finally {
       setIsUpdatingUserCredentials(false);
       setTimeout(() => setMessage(''), 3000);
