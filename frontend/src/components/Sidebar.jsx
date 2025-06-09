@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { CheckCheck } from 'lucide-react'
+import { CheckCheck, Search, SearchCheck, UserSearch } from 'lucide-react'
 import axios from 'axios';
 import { useSocket } from '../context/SocketContext'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom';
-import {House} from 'lucide-react'
+import {House, Archive} from 'lucide-react'
 
 function Sidebar() {
   const navigate = useNavigate()
@@ -50,7 +50,7 @@ function Sidebar() {
       const response = await axios.get("https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-friends-withLatest-messages", {
         withCredentials : true
       })
-      console.log('Friends with latest Message ', response.data)
+      // console.log('Friends with latest Message ', response.data)
       setFriends(response.data)
     } catch (err) {
       console.log('Error while fetching all friends with their latestMessage',err)
@@ -58,22 +58,28 @@ function Sidebar() {
   }
 
   return (
-    <div className='bg-slate-200 w-full h-full flex flex-col p-1 gap-1 overflow-y-scroll'>
+    <div className='bg-slate-200 w-full h-full flex flex-col p-1 gap-1'>
       
-      <div className='h-8 w-full bg-slate-300/40 py-2 px-5 flex justify-start items-center'>
-        <span className='cursor-pointer hover:scale-110 transition-all duration-150 ease-in' onClick={() => navigate('/home')}><House /></span>
+      <div className='h-8 w-full bg-slate-300/40 py-2 px-5 flex justify-start items-center gap-3'>
+        <span className='cursor-pointer hover:scale-110 transition-all duration-150 ease-in flex text-sm items-center gap-1' onClick={() => navigate('/home')}> <House size={21} /></span>
+
+        <span className='cursor-pointer hover:scale-110 transition-all duration-150 ease-in flex text-sm items-center gap-1'> <UserSearch size={21} /></span>
+
+        <span className='cursor-pointer hover:scale-110 transition-all duration-150 ease-in flex text-sm items-center gap-1'> <Archive size={21} /></span>
+    
+      
       </div>
 
       <div className='w-full flex justify-center'>
         <div className='border-b-2 border-slate-400 w-[90%]'></div>
       </div>
 
-      <div className='h-full w-full bg-transparent p-2 flex gap-3 flex-col'>
+      <div className='h-full w-full bg-transparent p-2 flex gap-3 flex-col overflow-y-scroll custom-scrollbar custom-scrollbar-hover'>
         {[...friends].reverse().map((friend) => (
           <div
             onClick={() => navigate(`/home/chat/${friend?._id}`)}
             key={friend._id}
-            className={`h-12 w-full bg-white/90 rounded-md flex gap-1 shadow-2xl shadow-black cursor-pointer`}
+            className={`h-12 w-full bg-white/40 rounded-md flex gap-1 shadow-2xl shadow-black cursor-pointer relative hover:bg-white/100 transition-all duration-150 ease-in-out `}
 
           >
           <div className='h-full w-[30%] flex justify-center items-center'>
@@ -89,6 +95,11 @@ function Sidebar() {
                 {latestMessages[friend._id]?.content || friend?.lastMessage?.content || 'Type your first message👋'}
               </span>
             </div>
+            </div>
+          <div className='absolute top-2 right-2'>
+            <span className='text-[12px] font-light text-gray-500'>
+              {new Date(friend?.lastMessage?.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </span>
           </div>
         </div>
         ))}

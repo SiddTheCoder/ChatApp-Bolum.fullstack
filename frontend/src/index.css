@@ -1,4 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Exile&display=swap');
 @import "tailwindcss";
+
 
 /* Add your custom styles */
 @layer utilities {
@@ -6,7 +8,7 @@
     clip-path: inset(0% 0% 0% 0%);
     animation: clipIn 1s ease forwards;
   }
-
+  
   @keyframes clipIn {
     0% {
       clip-path: inset(100% 0 0 0);
@@ -14,5 +16,50 @@
     100% {
       clip-path: inset(0% 0% 0% 0%);
     }
+  }
+  
+    /* Scrollbar always visible, thin by default */
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(168, 85, 247, 0.4) transparent; /* soft purple */
+    }
+  
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+  
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(168, 85, 247, 0.4); /* purple-ish */
+      border-radius: 10px;
+    }
+  
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  
+    /* Simulate transition effect on hover */
+    .custom-scrollbar-hover:hover::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, rgba(128, 90, 213, 1), rgba(240, 240, 255, 0.9));
+    }
+  
+    .custom-scrollbar-hover:hover::-webkit-scrollbar {
+      width: 8px;
+    }
+}
+
+
+
+
+/* Custom Font */
+@layer base {
+  body {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .font-poppins {
+    font-family: 'Poppins', sans-serif;
+  }
+  .font-exile {
+    font-family: 'Exile', sans-serif;
   }
 }

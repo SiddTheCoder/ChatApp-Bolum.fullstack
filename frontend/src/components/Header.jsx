@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import ShowNotifications from './ShowNotifications';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import BolumLogo from '../assets/bolum-logo.png'
 
 function Header() {
 
@@ -37,7 +38,7 @@ function Header() {
     const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/notification/get-unseen-notifications-count', {
       withCredentials : true
     })
-    console.log('Unseen Notifications Count', response.data)
+    // console.log('Unseen Notifications Count', response.data)
     // If the response is successful, update the notification count 
     setNotificationCount(response.data.data)
   }
@@ -45,11 +46,11 @@ function Header() {
   useEffect(() => {
     getUnSeenNotifications()
     socket?.on('friend-request-received', () => {
-      console.log('Friend Request received')
+      // console.log('Friend Request received')
       setNotificationCount((prev) => prev+1)
     })
     socket?.on('cancelled-friend-request', () => {
-      console.log('Friend Request cancelled')
+      // console.log('Friend Request cancelled')
       setNotificationCount((prev) => prev-1)
     })
 
@@ -59,7 +60,7 @@ function Header() {
     })
 
     socket?.on('rejected-friend-request', () => {
-      console.log('Friend Request Rejected')
+      // console.log('Friend Request Rejected')
       setNotificationCount((prev) => prev+1)
     })
   } , [currentUser])
@@ -103,7 +104,7 @@ function Header() {
 
   return (
     <header className='h-12 bg-white/80 text-black w-full flex justify-between items-center pl-10 px-2 border-b-1 border-black'>
-      <div className='flex gap-1 items-center justify-center cursor-pointer hover:bg-purple-950/50 py-1 px-4 rounded '>Search <Search className='relative top-[0.5px] hover:animate-bounce' size={20} strokeWidth={1.75} absoluteStrokeWidth /></div>
+      <div onClick={() => navigate('/home')} className='text-purple-950 flex gap-2 items-center justify-center cursor-pointer opacity-[0.8]  py-1 px-1 rounded font-exile text-3xl'><img src={BolumLogo} alt="" width={40} />BOLUM</div>
 
       <div className='flex justify-around items-center gap-2'>
         <div onClick={() => navigate('/settings')}><Settings className='hover:animate-spin cursor-pointer hover:scale-[1.2] transition-all duration-150 ease-in' /></div>

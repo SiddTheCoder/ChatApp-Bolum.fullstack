@@ -29,7 +29,7 @@ function ChatApp({ }) {
         { withCredentials: true }
       )
       setUser(response.data.data)
-      console.log('User friend  Fetched from getUserById', response.data.data)
+      // console.log('User friend  Fetched from getUserById', response.data.data)
     } catch (err) {
       console.log('Error occured while fetching the user by ID', err)
     }
@@ -67,7 +67,7 @@ function ChatApp({ }) {
   // reacting messages
   useEffect(() => {
     if (!socket || typeof socket.on !== 'function') {
-      console.log('Socket is not function')
+      console.log('Socket is not function ❌')
       return
     };
   

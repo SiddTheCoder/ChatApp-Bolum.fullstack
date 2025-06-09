@@ -27,8 +27,8 @@ function ShowNotifications({ closeModel, isOpen }) {
 
   const handleFriendRequestAccept = async (notification) => {
     if (socket) {
-      console.log('Accepting friend request', notification)
-      console.log('Current User', currentUser)
+      // console.log('Accepting friend request', notification)
+      // console.log('Current User', currentUser)
       socket.emit('accept-friend-request', {
         senderId: currentUser?._id ,
         receiverId: notification?.sender?._id,
@@ -41,7 +41,7 @@ function ShowNotifications({ closeModel, isOpen }) {
       const response = await axios.post(`https://chatapp-bolum-backend.onrender.com/api/v1/user/accept-friend-request?anotheruserId=${notification?.sender?._id}`, {}, {
         withCredentials : true
       })
-      console.log('Friend Request accepted and Added friend in databse', response.data.data)
+      // console.log('Friend Request accepted and Added friend in databse', response.data.data)
 
     } catch (error) {
       console.log('Error occured while handling the database',error)
@@ -74,7 +74,7 @@ function ShowNotifications({ closeModel, isOpen }) {
   
 
   return (
-    <div className={ isOpen ? `overflow-y-scroll h-[500px] w-[350px] bg-white  outline-1 outline-gray-300 shadow-sm rounded-md flex flex-col gap-1 absolute top-7 right-5 p-2` : 'hidden'}>
+    <div className={ isOpen ? `z-50 overflow-y-scroll h-[500px] w-[350px] bg-white  outline-1 outline-gray-300 shadow-sm rounded-md flex flex-col gap-1 absolute top-7 right-5 p-2` : 'hidden'}>
      
       {[...notifications]
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // newest first
