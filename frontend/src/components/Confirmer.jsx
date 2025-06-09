@@ -13,7 +13,7 @@ function Confirmer({ confirmatoryText, action, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
       <div className="bg-white rounded-xl shadow-xl p-6 w-[90%] max-w-md">
-        <h2 className="text-lg font-semibold mb-4 text-center">{confirmatoryText}</h2>
+        <h2 className="text-lg font-semibold mb-4 text-center text-black">{confirmatoryText}</h2>
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}

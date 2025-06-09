@@ -4,13 +4,14 @@ import axios from 'axios';
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 import RouteHandler from '../components/RouteHandler'
-import Header from '../components/Header'
+import Confirmer from '../components/Confirmer'
+
 
 function UserProfile() {
   const { username } = useParams()
   const {currentUser} = useAuth()
   const navigate = useNavigate()
-
+  const [showConfirm, setShowConfirm] = useState(false)
   const [user, setUser] = useState({})
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false)
 
@@ -46,13 +47,11 @@ function UserProfile() {
 
   const logoutUser = async () => {
     try {
-      const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/user/logout-user', {}, {
+      const response = await axios.get('https://chatapp-bolum-backend.onrender.com/api/v1/user/logout-user', {
         withCredentials: true
       })
-      // console.log("User Logout", response)
-      // console.log('Naviageting')
       navigate('/')
-      if (response.data?.status ==+ 200 || response.data?.statusText === 'OK') {
+      if (response.data?.status === 200 || response.data?.statusText === 'OK') {
       }
     } catch (err) {
       console.log('Error occured while Logouting the user', err)
@@ -83,7 +82,7 @@ function UserProfile() {
           <img
             src={user?.avatar}
             alt="avatar"
-            className="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover cursor-pointer"
+            className="w-96 h-96 rounded-full border-4 border-white shadow-md object-cover cursor-pointer"
           />
           <div className="text-center md:text-left flex-1">
             <h2 className="text-3xl font-bold">{user?.fullname}</h2>
@@ -91,16 +90,23 @@ function UserProfile() {
             <p className="mt-2 text-white/80">{user?.bio}</p>
             <p className="mt-1 text-sm text-white/60">{user?.email}</p>
             <div className="mt-2 flex w-full">
-               {isUserAuthenticated && <span onClick={() => navigate('settings/profile')} className="inline-block px-3 py-1 cursor-pointer hover:bg-gradient-to-br from-purple-400 to-blue-600 bg-gradient-to-bl transition-all duration-300 ease-in-out  border-2  text-sm rounded-full">
+               {isUserAuthenticated && <span onClick={() => navigate('/settings/profile')} className="inline-block px-3 py-1 cursor-pointer hover:bg-gradient-to-br from-purple-400 to-blue-600 bg-gradient-to-bl transition-all duration-300 ease-in-out  border-2  text-sm rounded-full">
                   Edit Profile
                </span>
                }
             </div>
             <div className="mt-2">
-               {isUserAuthenticated && <span onClick={logoutUser} className="inline-block px-3 py-1 cursor-pointer hover:bg-gradient-to-br from-purple-400 to-blue-600 bg-gradient-to-bl transition-all duration-300 ease-in-out  border-2  text-sm rounded-full">
+               {isUserAuthenticated && <span onClick={() => setShowConfirm(prev => !prev)} className="inline-block px-3 py-1 cursor-pointer hover:bg-gradient-to-br from-purple-400 to-blue-600 bg-gradient-to-bl transition-all duration-300 ease-in-out  border-2  text-sm rounded-full">
                   Logout
-               </span>
-               }
+                </span>
+                }
+                {showConfirm && 
+                    <Confirmer
+                    confirmatoryText="Are you sure you want to Logout ?"
+                    action={logoutUser}
+                    onClose={() => setShowConfirm(false)}
+                  />
+                }
             </div>
           </div>
         </div>

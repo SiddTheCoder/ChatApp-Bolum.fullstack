@@ -145,10 +145,13 @@ const logoutUser = asyncHandler(async (req, res) => {
     { new : true}
   )
   
+  // cookie settings
   const options = {
-    httpOnly: true,
-    secure : true
-  }
+    httpOnly : true,
+    secure: true,
+    sameSite: "None",
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
+}
 
   return res
     .status(200)
