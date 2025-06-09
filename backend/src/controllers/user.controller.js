@@ -289,11 +289,9 @@ const getUserById = asyncHandler(async (req, res) => {
 
   if (!userId) {
     user = await User.findById(req.user?._id).select('-refreshToken -password')
+  } else {
+    user = await User.findById(userId).select('-refreshToken -password')
   }
-  
-  user = await User.findById(userId).select('-refreshToken -password')
-  
-  
 
   return res.status(200).json(new ApiResponse(200,user,'user Fteched Succesfully'))
 })
