@@ -21,7 +21,7 @@ function AccountSettings() {
 
   const deleteUserAccount = async () => {
     try {
-      const response = await axios.post('https://chatapp-bolum-backend.onrender.com/api/v1/user/delete-user-account', { withCredentials: true })
+      const response = await axios.post('https://chatapp-bolum-backend.onrender.com/api/v1/user/delete-user-account',{}, { withCredentials: true })
       navigate('/')
     } catch (error) {
       console.log('error occured while deleting the user account',error)
