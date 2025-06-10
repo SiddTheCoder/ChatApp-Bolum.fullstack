@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import { TypeAnimation } from 'react-type-animation';
 
 function LoaderModal() {
   return (
@@ -10,7 +11,12 @@ function LoaderModal() {
 
         {/* Message */}
         <p className="text-center text-gray-800 font-medium">
-          We are Building the instances for you. Just a moment...
+          We are Building the instances for you.  
+          <TypeAnimation
+            sequence={['Wait a moment', 100, 'Already There', 100, 'Here we go', 100]}
+            speed={50}
+            repeat={Infinity}
+          />
         </p>
       </div>
     </div>

@@ -3,6 +3,7 @@ import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiError} from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { ChatMessage } from '../models/chatMessage.model.js';
+import { User } from '../models/user.model.js';
 
 export const findOrCreateChatAndGetAllMessages  = asyncHandler(async (req, res) => {
   const { friendId } = req.query;  
@@ -41,3 +42,43 @@ export const findOrCreateChatAndGetAllMessages  = asyncHandler(async (req, res) 
     .status(200)
     .json(new ApiResponse(200, messages, 'Messages fetched successfully'));
 });
+
+export const archiveChat = asyncHandler(async (req, res) => {
+  const { chatId } = req.query
+
+  if (!chatId) {
+    throw new ApiError(400, 'ChatId is required for archieving')
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $addToSet: {
+        archivedChats : chatId
+      }
+    },
+    { new: true }
+  )
+
+  return res.status(200).json(new ApiResponse(200,user,'Chat Archieved Successfully'))
+});
+
+export const unArchiveChat = asyncHandler(async (req, res) => {
+  const { chatId } = req.query
+
+  if (!chatId) {
+    throw new ApiError(400, 'ChatId is required for unArchiving')
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $pull: {
+        archivedChats : chatId
+      }
+    },
+    { new: true }
+  )
+
+  return res.status(200).json(new ApiResponse(200,user,'Chat unArchived Successfully'))
+})

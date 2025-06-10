@@ -166,7 +166,20 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 const deleteUser = asyncHandler(async (req, res) => {
   await User.deleteOne({ _id: req.user?._id });
-  return res.status(200).json(new ApiResponse(200,{},'Account Deleted Successfully'))
+  await ChatMessage.deleteMany({ sender: req.user?._id });
+    // cookie settings
+    const options = {
+      httpOnly : true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
+  }
+  
+  return res
+    .status(200)
+    .clearCookie('accessToken',options)
+    .clearCookie('refreshToken', options)
+    .json(new ApiResponse(200, {}, 'Account Deleted Successfully'))
 })
 
 const getCurrentUser = asyncHandler(async (req, res) => {
@@ -315,6 +328,9 @@ const getUserByUserName = asyncHandler(async (req, res) => {
 })
 
 const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
+  const { chatType } = req.query;
+
+  // Fetch the current user with their friends
   const user = await User.findById(req.user?._id)
     .populate('friends', '-password')
     .lean();
@@ -323,22 +339,44 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: 'User not found' });
   }
 
-  // Fetch all 1-to-1 chats where current user is a member
-  const chats = await Chat.find({
-    isGroupChat: false,
-    members: req.user?._id,
-  })
-    .populate({
-      path: 'lastMessage',
-      populate: { path: 'sender', select: 'name profilePic' },
+  let chats = [];
+
+  // Decide which chats to fetch based on chatType
+  if (chatType === 'archivedChats') {
+    // Fetch only archived one-to-one chats
+    chats = await Chat.find({
+      isGroupChat: false,
+      members: req.user?._id,
+      _id: { $in: user.archivedChats }, // include only archived chats
     })
-    .lean();
+      .populate({
+        path: 'lastMessage',
+        populate: { path: 'sender', select: 'name profilePic' },
+      })
+      .sort({ updatedAt: -1 }) // Optional: sort by latest
+      .lean();
+
+  } else {
+    // Default: fetch all one-to-one chats excluding archived ones
+    chats = await Chat.find({
+      isGroupChat: false,
+      members: req.user?._id,
+      _id: { $nin: user.archivedChats }, // exclude archived chats
+    })
+      .populate({
+        path: 'lastMessage',
+        populate: { path: 'sender', select: 'name profilePic' },
+      })
+      .sort({ updatedAt: -1 }) 
+      .lean();
+  }
 
   // Create a map { friendId: lastMessage }
   const friendLatestMessageMap = {};
-
   chats.forEach(chat => {
-    const friendId = chat.members.find(id => id.toString() !== req.user._id.toString());
+    const friendId = chat.members.find(
+      id => id.toString() !== req.user._id.toString()
+    );
     if (friendId) {
       friendLatestMessageMap[friendId.toString()] = chat.lastMessage;
     }
@@ -352,8 +390,12 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
     };
   });
 
-  res.status(200).json(friendsWithLatestMessage);
+  res.status(200).json({
+    chatType: chatType || 'allChats',
+    friends: friendsWithLatestMessage,
+  });
 });
+
 
 const updateUserCredentials = asyncHandler(async (req, res) => {
   const { username, email, oldPassword, newPassword, fullname, bio, socialHandles } = req.body;
