@@ -330,7 +330,6 @@ const getUserByUserName = asyncHandler(async (req, res) => {
 const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
   const { chatType } = req.query;
 
-  // Fetch the current user with their friends
   const user = await User.findById(req.user?._id)
     .populate('friends', '-password')
     .lean();
@@ -339,60 +338,50 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: 'User not found' });
   }
 
-  let chats = [];
+  let chatFilter = {
+    isGroupChat: false,
+    members: req.user?._id,
+  };
 
-  // Decide which chats to fetch based on chatType
   if (chatType === 'archivedChats') {
-    // Fetch only archived one-to-one chats
-    chats = await Chat.find({
-      isGroupChat: false,
-      members: req.user?._id,
-      _id: { $in: user.archivedChats }, // include only archived chats
-    })
-      .populate({
-        path: 'lastMessage',
-        populate: { path: 'sender', select: 'name profilePic' },
-      })
-      .sort({ updatedAt: -1 }) // Optional: sort by latest
-      .lean();
-
+    chatFilter._id = { $in: user.archivedChats };
   } else {
-    // Default: fetch all one-to-one chats excluding archived ones
-    chats = await Chat.find({
-      isGroupChat: false,
-      members: req.user?._id,
-      _id: { $nin: user.archivedChats }, // exclude archived chats
-    })
-      .populate({
-        path: 'lastMessage',
-        populate: { path: 'sender', select: 'name profilePic' },
-      })
-      .sort({ updatedAt: -1 }) 
-      .lean();
+    chatFilter._id = { $nin: user.archivedChats };
   }
 
-  // Create a map { friendId: lastMessage }
+  const chats = await Chat.find(chatFilter)
+    .populate({
+      path: 'lastMessage',
+      populate: { path: 'sender', select: 'name profilePic' },
+    })
+    .sort({ updatedAt: -1 })
+    .lean();
+
+  // Create a map of friendId => lastMessage
   const friendLatestMessageMap = {};
+  const validFriendIds = new Set();
+
   chats.forEach(chat => {
     const friendId = chat.members.find(
       id => id.toString() !== req.user._id.toString()
     );
     if (friendId) {
       friendLatestMessageMap[friendId.toString()] = chat.lastMessage;
+      validFriendIds.add(friendId.toString());
     }
   });
 
-  // Attach lastMessage to each friend
-  const friendsWithLatestMessage = user.friends.map(friend => {
-    return {
+  // Filter only the friends that are part of the selected chats
+  const filteredFriends = user.friends
+    .filter(friend => validFriendIds.has(friend._id.toString()))
+    .map(friend => ({
       ...friend,
       lastMessage: friendLatestMessageMap[friend._id.toString()] || null,
-    };
-  });
+    }));
 
   res.status(200).json({
     chatType: chatType || 'allChats',
-    friends: friendsWithLatestMessage,
+    friends: filteredFriends,
   });
 });
 
