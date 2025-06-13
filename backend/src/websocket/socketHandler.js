@@ -129,6 +129,18 @@ export function setupSocket(io) {
           { new: true }
         )
 
+        let chat = await Chat.findOne({
+          isGroupChat: false,
+          members: { $all: [req.user._id, anotheruserId], $size: 2 }
+        });
+        
+        if (!chat) {
+          await Chat.create({
+            isGroupChat: false,
+            members: [req.user._id, anotheruserId]
+          });
+        }
+
       } catch (err) {
         console.log('Error occured while acceptong friend request', err)
       }

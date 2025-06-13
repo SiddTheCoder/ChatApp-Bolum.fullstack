@@ -384,10 +384,12 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
   });
 
   // Filter only the friends that are part of the selected chats
-  const filteredFriends = user.friends.map(friend => ({
-  ...friend,
-  lastMessage: friendLatestMessageMap[friend._id.toString()] || null,
-}));
+  const filteredFriends = user.friends
+    .filter(friend => validFriendIds.has(friend._id.toString()))
+    .map(friend => ({
+      ...friend,
+      lastMessage: friendLatestMessageMap[friend._id.toString()] || null,
+    }));
 
   res.status(200).json({
     chatType: chatType || 'allChats',
