@@ -131,7 +131,7 @@ function ShowAllUsers() {
   return (
     <div className="h-full w-full overflow-y-scroll p-6 bg-gray-50">
       <div className="flex flex-wrap justify-center gap-6">
-        {users?.map((user) => (
+        {!loading ? users?.map((user) => (
           <div
             key={user._id}
             className="w-72 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-transform duration-300 hover:scale-[1.02] p-5 flex flex-col items-center space-y-3"
@@ -179,7 +179,23 @@ function ShowAllUsers() {
               )}
             </div>
           </div>
-        ))}
+        )) : ( Array.from({ length: 4 }).map((_, i) => (
+          <div
+            key={i}
+            className="w-72 bg-white border border-gray-200 rounded-xl shadow-sm p-5 flex flex-col items-center space-y-3 animate-pulse"
+          >
+            {/* Avatar skeleton */}
+            <div className="w-24 h-24 rounded-full bg-gray-300" />
+      
+            {/* Name skeleton */}
+            <div className="h-5 w-3/4 bg-gray-300 rounded" />
+      
+            {/* Button skeleton */}
+            <div className="w-full">
+              <div className="h-8 w-1/2 mx-auto bg-gray-300 rounded" />
+            </div>
+          </div>
+        )))}
       </div>
     </div>
   )

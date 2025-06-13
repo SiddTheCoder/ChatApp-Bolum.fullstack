@@ -15,7 +15,10 @@ function Sidebar() {
   const [archivedChats, setArchivedChats] = useState([]);
   const [outletState, setOutletState] = useState('homeChats');
   const [openChatId, setOpenChatId] = useState(null); // stores the ID of the open dropdown
-  const [loading, setLoading] = useState(false);
+
+  const [archivedChatsLoading, setArchivedChatsLoading] = useState(false);
+  const [archivingChat, setArchivingChat] = useState(false);
+  const [unArchivingChat, setUnArchivingChat] = useState(false);
   const [userChatLoading, setUserChatLoading] = useState(false);
 
   const [tooltip, setTooltip] = useState(null);
@@ -43,7 +46,7 @@ function Sidebar() {
       const response = await axios.get("https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-friends-withLatest-messages", {
         withCredentials: true
       })
-      console.log('Friends with latest Message ', response.data)
+      // console.log('Friends with latest Message ', response.data)
       setFriends(response.data?.friends || [])
       setUserChatLoading(false)
     } catch (err) {
@@ -52,41 +55,49 @@ function Sidebar() {
   }
 
   const getArchivedChats = async (e) => {
+    setArchivedChatsLoading(true)
     e.stopPropagation();
     const chatType = 'archivedChats';
     try {
       const response = await axios.get(`https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-friends-withLatest-messages?chatType=${chatType}`, {
         withCredentials: true
       })
-      console.log('Archived chat fetched Successfully', response.data)
+      // console.log('Archived chat fetched Successfully', response.data)
       setArchivedChats(response.data?.friends || [])
       setOpenChatId(null) // close the dropdown after archiving
+      setArchivedChatsLoading(false)
     } catch (err) {
       console.log('Error while archiving chat', err)
     }
   }
 
   const archiveChat = async (chatId, e) => {
+    setArchivingChat(true)
     e.stopPropagation();
     try {
       const response = await axios.post(`https://chatapp-bolum-backend.onrender.com/api/v1/chat/archive-chat?chatId=${chatId}`, {}, {
         withCredentials: true
       });
-      console.log('Chat archived successfully:', response.data);
+      // console.log('Chat archived successfully:', response.data);
       getUserFriendsWithTheirLatestMessages(); // Refresh friends list after archiving
+      setOpenChatId(null) // close the dropdown after archiving
+      setArchivingChat(false)
     } catch (error) {
       console.error('Error archiving chat:', error);
     }
   }
 
   const unArchiveChat = async (chatId, e) => {
+    setUnArchivingChat(true)
     e.stopPropagation();
     try {
       const response = await axios.post(`https://chatapp-bolum-backend.onrender.com/api/v1/chat/un-archive-chat?chatId=${chatId}`, {}, {
         withCredentials: true
       });
-      console.log('Chat unarchived successfully:', response.data);
-      getUserFriendsWithTheirLatestMessages(); 
+      // console.log('Chat unarchived successfully:', response.data);
+      getArchivedChats(e)
+      setOpenChatId(null) // close the dropdown after unarchiving
+      setUnArchivingChat(false)
     } catch (error) {
       console.error('Error unarchiving chat:', error);
     }
@@ -116,7 +127,7 @@ function Sidebar() {
 
   return (
     <div className='bg-slate-200 w-full h-full flex flex-col p-1 gap-1'>
-      <div className='h-8 w-full bg-slate-300/40 py-2 px-5 flex justify-start items-center gap-5'>
+      <div className='h-8 w-full bg-slate-300/40 py-2 px-5 flex justify-start items-center gap-2'>
         {/* Home Icon */}
         <div
           className='relative flex items-center justify-center'
@@ -124,14 +135,17 @@ function Sidebar() {
           onMouseLeave={handleMouseLeave}
         >
           <span
-            onClick={() => setOutletState('homeChats')}
-            className='cursor-pointer hover:scale-110 transition-all duration-150 ease-in flex text-sm items-center'
+            onClick={() => {
+              setOutletState('homeChats')
+              getUserFriendsWithTheirLatestMessages()
+            }}
+            className='cursor-pointer hover:scale-110 transition-all duration-75 ease-in flex text-sm items-center'
           >
-            <House size={19} />
+            <House className='hover:bg-purple-900 hover:text-white p-1 rounded-full ' size={29} />
           </span>
 
           {tooltip === 'chatHome' && (
-            <div className='absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded shadow-md z-10 whitespace-nowrap'>
+            <div className='absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-purple-950 text-white text-xs px-2 py-1 rounded shadow-md z-10 whitespace-nowrap'>
               Chat Home
             </div>
           )}
@@ -144,11 +158,11 @@ function Sidebar() {
           onMouseLeave={handleMouseLeave}
         >
           <span className='cursor-pointer hover:scale-110 transition-all duration-150 ease-in flex text-sm items-center'>
-            <UserSearch size={19} />
+            <UserSearch  className='hover:bg-purple-900 hover:text-white p-1 rounded-full ' size={29} />
           </span>
 
           {tooltip === 'Search' && (
-            <div className='absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded shadow-md z-10 whitespace-nowrap'>
+            <div className='absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-purple-950 text-white text-xs px-2 py-1 rounded shadow-md z-10 whitespace-nowrap'>
               Search
             </div>
           )}
@@ -164,11 +178,11 @@ function Sidebar() {
             setOutletState('archivedChats')
             getArchivedChats(e)
           }} className='cursor-pointer hover:scale-110 transition-all duration-150 ease-in flex text-sm items-center'>
-            <Archive size={19} />
+            <Archive  className='hover:bg-purple-900 hover:text-white p-1 rounded-full ' size={29} />
           </span>
 
           {tooltip === 'Archive' && (
-            <div className='absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded shadow-md z-10 whitespace-nowrap'>
+            <div className='absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-purple-950 text-white text-xs px-2 py-1 rounded shadow-md z-10 whitespace-nowrap'>
               Archive Chats
             </div>
           )}
@@ -226,7 +240,7 @@ function Sidebar() {
                     <span
                       onClick={(e) => archiveChat(friend.lastMessage?.chat, e)}
                       className='text-sm transition-all duration-150 ease-in bg-purple-200/10 hover:bg-purple-400/10 py-2 flex gap-1 items-center px-2 pt-1'>
-                      <Archive size={15} /> Archive Chat
+                      <Archive className={`${archivingChat ? 'animate-bounce' : ''}`} size={15} /> {archivingChat ? 'Archiving...' : 'Archive Chat'}
                     </span>
                     <div className='w-full flex justify-center'><span className='w-[95%] border-b-2 my-1 border-b-blue-900'></span></div>
                     <span className='bg-purple-200/10 hover:bg-purple-400/10 transition-all duration-150 ease-in py-2 text-sm flex gap-1 items-center px-2 pt-1'><Trash size={15} /> Delete Chat</span>
@@ -236,7 +250,7 @@ function Sidebar() {
             </div>
           )) : (
             <div className='h-full w-full bg-transparent p-2 flex gap-3 flex-col overflow-y-scroll custom-scrollbar custom-scrollbar-hover'>
-              {[...Array(5)].map((_, index) => (
+              {[...Array(2)].map((_, index) => (
                 <div
                   key={index}
                   className='h-12 w-full bg-white/30 rounded-md flex gap-1 cursor-pointer relative animate-pulse'
@@ -265,10 +279,9 @@ function Sidebar() {
         </div>
       )}
 
-      
-{outletState === 'archivedChats' && (
+      {outletState === 'archivedChats' && (
         <div className='h-full w-full bg-transparent p-2 flex gap-3 flex-col overflow-y-scroll custom-scrollbar custom-scrollbar-hover'>
-          {[...archivedChats].reverse().map((friend) => (
+          {!archivedChatsLoading ? archivedChats.length > 0 ? [...archivedChats].reverse().map((friend) => (
             <div
               onClick={() => navigate(`/home/chat/${friend?._id}`)}
               key={friend._id}
@@ -309,11 +322,11 @@ function Sidebar() {
                   className='absolute top-5 right-7 z-20'
                   onMouseLeave={() => setOpenChatId(null)}
                 >
-                  <div className='h-22 my-2 w-36 bg-gray-300/90 rounded-md flex flex-col p-2 shadow-lg'>
+                  <div className='h-22 my-2 w-40 bg-gray-300/90 rounded-md flex flex-col p-2 shadow-lg'>
                     <span
-                      onClick={(e) => archiveChat(friend.lastMessage?.chat, e)}
+                      onClick={(e) => unArchiveChat(friend.lastMessage?.chat, e)}
                       className='text-sm transition-all duration-150 ease-in bg-purple-200/10 hover:bg-purple-400/10 py-2 flex gap-1 items-center px-2 pt-1'>
-                      <Archive size={15} /> Archive Chat
+                      <Archive className={`${unArchivingChat ? 'animate-bounce' : ''}`} size={15} /> {unArchivingChat ? 'Unarchiving...' : 'Unarchive Chat'}
                     </span>
                     <div className='w-full flex justify-center'><span className='w-[95%] border-b-2 my-1 border-b-blue-900'></span></div>
                     <span className='bg-purple-200/10 hover:bg-purple-400/10 transition-all duration-150 ease-in py-2 text-sm flex gap-1 items-center px-2 pt-1'><Trash size={15} /> Delete Chat</span>
@@ -321,9 +334,37 @@ function Sidebar() {
                 </div>
               )}
             </div>
-          ))}
+          )) : <p className="text-center text-sm text-gray-500">No archived chats found.</p>
+          : (
+            <div className='h-full w-full bg-transparent p-2 flex gap-3 flex-col overflow-y-scroll custom-scrollbar custom-scrollbar-hover'>
+              {[...Array(2)].map((_, index) => (
+                <div
+                  key={index}
+                  className='h-12 w-full bg-white/30 rounded-md flex gap-1 cursor-pointer relative animate-pulse'
+                >
+                  <div className='h-full w-[30%] flex justify-center items-center'>
+                    <div className='h-10 w-10 rounded-full bg-gray-400'></div>
+                  </div>
+
+                  <div className='w-full h-full flex flex-col items-start justify-center gap-[2px]'>
+                    <div className='h-3 w-[60%] bg-gray-400 rounded'></div>
+                    <div className='h-2 w-[80%] bg-gray-300 rounded'></div>
+                  </div>
+
+                  <div className='absolute bottom-1 right-2'>
+                    <div className='h-2 w-10 bg-gray-300 rounded'></div>
+                  </div>
+
+                  <div className='absolute top-1 right-2'>
+                    <div className='h-6 w-6 bg-gray-300 rounded-full'></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
+
     </div>
   )
 }
