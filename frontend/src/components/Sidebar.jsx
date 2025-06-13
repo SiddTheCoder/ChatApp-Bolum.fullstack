@@ -46,7 +46,7 @@ function Sidebar() {
       const response = await axios.get("https://chatapp-bolum-backend.onrender.com/api/v1/user/get-user-friends-withLatest-messages", {
         withCredentials: true
       })
-      // console.log('Friends with latest Message ', response.data)
+      console.log('Friends with latest Message ', response.data)
       setFriends(response.data?.friends || [])
       setUserChatLoading(false)
     } catch (err) {
