@@ -350,47 +350,56 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: 'User not found' });
   }
 
-  // Fetch all relevant chats for the user
-  let chatFilter = {
+  // Fetch all 1-1 chats the user is part of
+  const allChats = await Chat.find({
     isGroupChat: false,
     members: req.user._id,
-  };
-
-  if (chatType === 'archivedChats') {
-    chatFilter._id = { $in: user.archivedChats };
-  } else {
-    chatFilter._id = { $nin: user.archivedChats };
-  }
-
-  const chats = await Chat.find(chatFilter)
+  })
     .populate({
       path: 'lastMessage',
       populate: { path: 'sender', select: 'name profilePic' },
     })
     .lean();
 
-  // Create a map: friendId => lastMessage
-  const friendLatestMessageMap = {};
-  chats.forEach(chat => {
+  // Map of friendId => chat + lastMessage
+  const friendChatMap = new Map();
+
+  allChats.forEach(chat => {
     const friendId = chat.members.find(
       id => id.toString() !== req.user._id.toString()
     );
     if (friendId) {
-      friendLatestMessageMap[friendId.toString()] = chat.lastMessage;
+      friendChatMap.set(friendId.toString(), {
+        chatId: chat._id.toString(),
+        lastMessage: chat.lastMessage || null,
+        isArchived: user.archivedChats.includes(chat._id),
+      });
     }
   });
 
-  // Build the complete friend list (whether chatted or not)
-  const completeFriendList = user.friends.map(friend => ({
-    ...friend,
-    lastMessage: friendLatestMessageMap[friend._id.toString()] || null,
-  }));
+  const filteredFriends = user.friends.filter(friend => {
+    const chatMeta = friendChatMap.get(friend._id.toString());
+
+    // Friend has no chat at all — always show in allChats
+    if (!chatMeta) return chatType !== 'archivedChats';
+
+    // Friend has chat — filter based on whether it's archived
+    const isArchived = chatMeta.isArchived;
+    return chatType === 'archivedChats' ? isArchived : !isArchived;
+  }).map(friend => {
+    const chatMeta = friendChatMap.get(friend._id.toString());
+    return {
+      ...friend,
+      lastMessage: chatMeta?.lastMessage || null,
+    };
+  });
 
   res.status(200).json({
     chatType: chatType || 'allChats',
-    friends: completeFriendList,
+    friends: filteredFriends,
   });
 });
+
 
 
 
