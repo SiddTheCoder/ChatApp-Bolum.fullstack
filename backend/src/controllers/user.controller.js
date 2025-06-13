@@ -31,6 +31,16 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400,'All Credenetials are required')
   }
 
+  const validateEmail = (email) => {
+    const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    return gmailRegex.test(email);
+  };
+
+  if (!validateEmail(email)) {
+    throw new ApiError(400, 'Please provide a valid Gmail address');
+  }
+  
+
   const existedUser = await User.find({
     $or: [{ username }, { email}]
   })

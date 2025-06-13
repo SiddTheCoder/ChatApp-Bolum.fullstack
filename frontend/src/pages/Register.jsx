@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { User, LockKeyhole, CircleDashed, MoveRight, Mail, UserPen, EyeClosed } from 'lucide-react';
 import BolumLogo from '../assets/Bolum-Logo.png';
+import LineFallingImage from '../assets/line-falling.png'
 
 function Register() {
   const navigate = useNavigate();
@@ -92,16 +93,13 @@ function Register() {
 
   return (
     <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-r from-white via-purple-100 to-blue-100">
-      <div className="sm:flex hidden w-[35vw] border-purple-500 min-w-96 p-6 h-[80vh] min-h-96 bg-white/30 border shadow-2xl flex-col items-center border-none">
-        <h1 className="text-2xl text-left w-full font-bold text-black/70 mb-2 font-exo2">
-          Welcome to <span className='text-purple-700 text-4xl'>Bolum</span>
-        </h1>
-        <img src={BolumLogo} alt="Bolum Logo" className="w-[80%] mb-4" />
-        <p className="text-gray-600 text-sm text-left w-full">
-          Bolum is a modern chat application that allows you to connect with friends and communities. 
-          Join us to experience seamless communication and collaboration.
-        </p>
-      </div>
+       <div className="relative sm:flex hidden w-[35vw] border-purple-500 min-w-96 p-6 h-[80vh] min-h-96 bg-white/30 border shadow-2xl flex-col items-center border-none">
+             <h1 className="text-2xl text-left w-full font-bold text-black/70 mb-2 font-exo2">Welcome to <span className='text-purple-700 text-4xl'>Bolum</span></h1>
+             <img src={BolumLogo} alt="Bolum Logo" className="w-[90%] mb-4" />
+     
+             <img src={LineFallingImage} alt="Line Falling" width={100} className="w-[100%] top-5 absolute" />
+     
+           </div>
 
       <div className="w-96 h-[80vh] min-h-96 p-6 bg-white/30 border border-none shadow-2xl flex flex-col items-center">
         <form onSubmit={handleRegisterForm} className="w-full flex flex-col gap-4">
