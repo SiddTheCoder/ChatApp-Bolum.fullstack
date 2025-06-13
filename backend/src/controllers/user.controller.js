@@ -350,9 +350,10 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: 'User not found' });
   }
 
+  // Fetch all relevant chats for the user
   let chatFilter = {
     isGroupChat: false,
-    members: req.user?._id,
+    members: req.user._id,
   };
 
   if (chatType === 'archivedChats') {
@@ -366,36 +367,31 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
       path: 'lastMessage',
       populate: { path: 'sender', select: 'name profilePic' },
     })
-    .sort({ updatedAt: -1 })
     .lean();
 
-  // Create a map of friendId => lastMessage
+  // Create a map: friendId => lastMessage
   const friendLatestMessageMap = {};
-  const validFriendIds = new Set();
-
   chats.forEach(chat => {
     const friendId = chat.members.find(
       id => id.toString() !== req.user._id.toString()
     );
     if (friendId) {
       friendLatestMessageMap[friendId.toString()] = chat.lastMessage;
-      validFriendIds.add(friendId.toString());
     }
   });
 
-  // Filter only the friends that are part of the selected chats
-  const filteredFriends = user.friends
-    .filter(friend => validFriendIds.has(friend._id.toString()))
-    .map(friend => ({
-      ...friend,
-      lastMessage: friendLatestMessageMap[friend._id.toString()] || null,
-    }));
+  // Build the complete friend list (whether chatted or not)
+  const completeFriendList = user.friends.map(friend => ({
+    ...friend,
+    lastMessage: friendLatestMessageMap[friend._id.toString()] || null,
+  }));
 
   res.status(200).json({
     chatType: chatType || 'allChats',
-    friends: filteredFriends,
+    friends: completeFriendList,
   });
 });
+
 
 
 const updateUserCredentials = asyncHandler(async (req, res) => {
