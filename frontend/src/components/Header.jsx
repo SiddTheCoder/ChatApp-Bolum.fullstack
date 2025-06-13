@@ -5,7 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import ShowNotifications from './ShowNotifications';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import BolumLogo from '../assets/bolum-logo.png'
+import BolumLogo from '../assets/Bolum-Logo.png'
 
 function Header() {
 
