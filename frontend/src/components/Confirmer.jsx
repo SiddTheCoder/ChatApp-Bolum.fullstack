@@ -4,9 +4,9 @@ function Confirmer({ confirmatoryText, action, onClose }) {
 
   const [isActionOccuring, setIsActionOccuring] = React.useState(false)
 
-  const handleClickOnConfirm = () => {
+  const handleClickOnConfirm = async() => {
     setIsActionOccuring(true)
-    action();
+    await action();
     setIsActionOccuring(false)
     onClose();
   }

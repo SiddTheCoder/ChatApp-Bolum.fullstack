@@ -68,7 +68,7 @@ function Login() {
 
   const loginUser = async () => {
     const dataToSend = {
-      username: formData.username,
+      username: formData.username?.toLowerCase(),
       email: formData.username.toLowerCase(), // for email login
       password: formData.password,
     }

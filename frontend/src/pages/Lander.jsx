@@ -118,7 +118,7 @@ function Lander() {
       Get Started
     </button>
   </Link>
-  <div className="absolute bottom-6 text-white animate-bounce opacity-70 text-sm z-10">Scroll ⬇️</div>
+  <div className="absolute bottom-6 text-white animate-bounce opacity-70 text-sm z-10">Made with ❤️ by <a className='underline hover:ml-3 transition-all duration-200 ease-in-out' href="https://www.siddhantyadav.com.np">SiddTheCoder</a></div>
 </section>
 
 
