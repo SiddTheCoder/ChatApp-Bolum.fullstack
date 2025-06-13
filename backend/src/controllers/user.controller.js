@@ -276,6 +276,23 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
     {new : true}
   )
   
+
+  // ✅ Ensure a private chat exists
+  let chat = await Chat.findOne({
+    isGroupChat: false,
+    members: { $all: [userId, friendId], $size: 2 },
+  });
+  // ✅ If no chat exists, create one
+  const userId = req.user?._id
+  const friendId = anotheruserId
+
+  if (!chat) {
+    chat = await Chat.create({
+      isGroupChat: false,
+      members: [userId, friendId],
+    });
+  }
+
   return res
     .status(200)
     .json(new ApiResponse(200, 'Friend added succesfully in both users'))
