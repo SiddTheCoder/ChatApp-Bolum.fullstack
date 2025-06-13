@@ -277,22 +277,7 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
   )
   
 
-  // ✅ Ensure a private chat exists
-  let chat = await Chat.findOne({
-    isGroupChat: false,
-    members: { $all: [userId, friendId], $size: 2 },
-  });
-  // ✅ If no chat exists, create one
-  const userId = req.user?._id
-  const friendId = anotheruserId
-
-  if (!chat) {
-    chat = await Chat.create({
-      isGroupChat: false,
-      members: [userId, friendId],
-    });
-  }
-
+ 
   return res
     .status(200)
     .json(new ApiResponse(200, 'Friend added succesfully in both users'))
@@ -399,12 +384,10 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
   });
 
   // Filter only the friends that are part of the selected chats
-  const filteredFriends = user.friends
-    .filter(friend => validFriendIds.has(friend._id.toString()))
-    .map(friend => ({
-      ...friend,
-      lastMessage: friendLatestMessageMap[friend._id.toString()] || null,
-    }));
+  const filteredFriends = user.friends.map(friend => ({
+  ...friend,
+  lastMessage: friendLatestMessageMap[friend._id.toString()] || null,
+}));
 
   res.status(200).json({
     chatType: chatType || 'allChats',
