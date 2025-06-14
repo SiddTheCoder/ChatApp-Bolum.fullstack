@@ -347,9 +347,10 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
     .lean();
 
   if (!user) {
-    return res.status(404).json({ message: 'User not found' });
+    throw new ApiError(404, 'User not found');
   }
 
+  // Fetch all 1-on-1 chats
   const allChats = await Chat.find({
     isGroupChat: false,
     members: req.user._id,
@@ -360,6 +361,7 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
     })
     .lean();
 
+  const archivedChatIds = user.archivedChats?.map(id => id.toString()) || [];
   const friendChatMap = new Map();
 
   allChats.forEach(chat => {
@@ -367,10 +369,11 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
       id => id.toString() !== req.user._id.toString()
     );
     if (friendId) {
+      const isArchived = archivedChatIds.includes(chat._id.toString());
       friendChatMap.set(friendId.toString(), {
         chatId: chat._id.toString(),
         lastMessage: chat.lastMessage || null,
-        isArchived: user.archivedChats?.includes(chat._id),
+        isArchived,
       });
     }
   });
@@ -380,10 +383,9 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
       const friendIdStr = friend._id.toString();
       let chatMeta = friendChatMap.get(friendIdStr);
 
-      // If no chat exists, create it
       if (!chatMeta) {
         const newChat = await Chat.create({
-          chatName: 'sender', // or friend.name if preferred
+          chatName: 'sender',
           isGroupChat: false,
           members: [req.user._id, friend._id],
         });
@@ -406,9 +408,11 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
   );
 
   const filteredFriends = updatedFriends.filter(friend => {
-    return chatType === 'archivedChats'
-      ? friend.isArchived
-      : !friend.isArchived;
+    if (chatType === 'archivedChats') {
+      return friend.isArchived;
+    } else {
+      return !friend.isArchived;
+    }
   });
 
   res.status(200).json({
@@ -416,8 +420,6 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
     friends: filteredFriends,
   });
 });
-
-
 
 
 

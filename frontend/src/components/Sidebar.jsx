@@ -85,6 +85,7 @@ function Sidebar() {
       const response = await axios.post(`https://chatapp-bolum-backend.onrender.com/api/v1/chat/archive-chat?chatId=${chatId}`, {}, {
         withCredentials: true
       });
+      console.log('Archive response:', response.data);
       // console.log('Chat archived successfully:', response.data);
       getUserFriendsWithTheirLatestMessages(); // Refresh friends list after archiving
       setOpenChatId(null) // close the dropdown after archiving
