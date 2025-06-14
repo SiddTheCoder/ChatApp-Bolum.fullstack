@@ -385,7 +385,6 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
 
       if (!chatMeta) {
         const newChat = await Chat.create({
-          chatName: 'sender',
           isGroupChat: false,
           members: [req.user._id, friend._id],
         });
