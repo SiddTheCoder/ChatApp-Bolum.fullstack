@@ -350,7 +350,6 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: 'User not found' });
   }
 
-  // Fetch all 1-1 chats the user is part of
   const allChats = await Chat.find({
     isGroupChat: false,
     members: req.user._id,
@@ -361,7 +360,6 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
     })
     .lean();
 
-  // Map of friendId => chat + lastMessage
   const friendChatMap = new Map();
 
   allChats.forEach(chat => {
@@ -372,26 +370,45 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
       friendChatMap.set(friendId.toString(), {
         chatId: chat._id.toString(),
         lastMessage: chat.lastMessage || null,
-        isArchived: user.archivedChats.includes(chat._id),
+        isArchived: user.archivedChats?.includes(chat._id),
       });
     }
   });
 
-  const filteredFriends = user.friends.filter(friend => {
-    const chatMeta = friendChatMap.get(friend._id.toString());
+  const updatedFriends = await Promise.all(
+    user.friends.map(async friend => {
+      const friendIdStr = friend._id.toString();
+      let chatMeta = friendChatMap.get(friendIdStr);
 
-    // Friend has no chat at all — always show in allChats
-    if (!chatMeta) return chatType !== 'archivedChats';
+      // If no chat exists, create it
+      if (!chatMeta) {
+        const newChat = await Chat.create({
+          chatName: 'sender', // or friend.name if preferred
+          isGroupChat: false,
+          members: [req.user._id, friend._id],
+        });
 
-    // Friend has chat — filter based on whether it's archived
-    const isArchived = chatMeta.isArchived;
-    return chatType === 'archivedChats' ? isArchived : !isArchived;
-  }).map(friend => {
-    const chatMeta = friendChatMap.get(friend._id.toString());
-    return {
-      ...friend,
-      lastMessage: chatMeta?.lastMessage || null,
-    };
+        chatMeta = {
+          chatId: newChat._id.toString(),
+          lastMessage: null,
+          isArchived: false,
+        };
+
+        friendChatMap.set(friendIdStr, chatMeta);
+      }
+
+      return {
+        ...friend,
+        lastMessage: chatMeta.lastMessage || null,
+        isArchived: chatMeta.isArchived,
+      };
+    })
+  );
+
+  const filteredFriends = updatedFriends.filter(friend => {
+    return chatType === 'archivedChats'
+      ? friend.isArchived
+      : !friend.isArchived;
   });
 
   res.status(200).json({
@@ -399,6 +416,7 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
     friends: filteredFriends,
   });
 });
+
 
 
 

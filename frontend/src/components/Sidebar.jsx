@@ -51,6 +51,7 @@ function Sidebar() {
       setUserChatLoading(false)
     } catch (err) {
       console.log('Error while fetching all friends with their latestMessage', err)
+      setUserChatLoading(false)
     }
   }
 
@@ -67,11 +68,17 @@ function Sidebar() {
       setOpenChatId(null) // close the dropdown after archiving
       setArchivedChatsLoading(false)
     } catch (err) {
+      setArchivedChatsLoading(false)
       console.log('Error while archiving chat', err)
     }
   }
 
   const archiveChat = async (chatId, e) => {
+    console.log('Archiving chat with ID:', chatId);
+    if (!chatId) {
+      console.error('No chat ID provided for archiving');
+      return;
+    }
     setArchivingChat(true)
     e.stopPropagation();
     try {
@@ -84,6 +91,7 @@ function Sidebar() {
       setArchivingChat(false)
     } catch (error) {
       console.error('Error archiving chat:', error);
+      setArchivingChat(false)
     }
   }
 
@@ -100,6 +108,7 @@ function Sidebar() {
       setUnArchivingChat(false)
     } catch (error) {
       console.error('Error unarchiving chat:', error);
+      setUnArchivingChat(false)
     }
   }
 
@@ -238,7 +247,10 @@ function Sidebar() {
                 >
                   <div className='h-22 my-2 w-36 bg-gray-300/90 rounded-md flex flex-col p-2 shadow-lg'>
                     <span
-                      onClick={(e) => archiveChat(friend.lastMessage?.chat, e)}
+                      onClick={(e) => {
+                        console.log('Archiving chat with ID:', friend);
+                        archiveChat(friend.lastMessage?.chat, e);
+                      }}
                       className='text-sm transition-all duration-150 ease-in bg-purple-200/10 hover:bg-purple-400/10 py-2 flex gap-1 items-center px-2 pt-1'>
                       <Archive className={`${archivingChat ? 'animate-bounce' : ''}`} size={15} /> {archivingChat ? 'Archiving...' : 'Archive Chat'}
                     </span>
