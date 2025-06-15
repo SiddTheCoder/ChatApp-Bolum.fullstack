@@ -19,7 +19,7 @@ router.post('/chat', async (req, res) => {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'mistralai/mixtral-8x7b', // or try 'openai/gpt-3.5-turbo' / 'anthropic/claude-3-haiku'
+      model: 'mistralai/mixtral-8x7b-instruct', // or try 'openai/gpt-3.5-turbo' / 'anthropic/claude-3-haiku'
       messages: [
         { role: 'system', content: 'You are a helpful and empathetic mental health assistant.' },
         { role: 'user', content: message },
