@@ -24,11 +24,17 @@ function BolumMentor() {
         content: res.data.reply,
       };
       setChatHistory((prev) => [...prev, newBotMessage]);
+      console.log('AI Response:', res.data.reply);
     } catch (err) {
-      setChatHistory((prev) => [
-        ...prev,
-        { role: 'assistant', content: 'Sorry, I could not respond right now.' },
-      ]);
+      console.error('Error fetching AI response:', err);
+        const msg = err?.response?.status === 429
+          ? 'Quota exceeded. Please try again later or upgrade your API plan.'
+          : 'Sorry, I could not respond right now.';
+      
+        setChatHistory((prev) => [
+          ...prev,
+          { role: 'assistant', content: msg },
+        ]);
     } finally {
       setLoading(false);
     }
