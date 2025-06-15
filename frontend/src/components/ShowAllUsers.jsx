@@ -144,13 +144,14 @@ function ShowAllUsers() {
               />
             </div>
 
-            <div>
+            <div className='group relative w-full flex items-center justify-center space-x-2'>
               <span
                 onClick={() => navigate(`/${user.username}`)}
                 className="text-gray-800 font-semibold text-lg cursor-pointer hover:underline"
               >
                 {user.fullname}
               </span>
+             
             </div>
 
             <div className="w-full">

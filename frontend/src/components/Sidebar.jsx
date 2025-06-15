@@ -201,6 +201,48 @@ function Sidebar() {
             </div>
           )}
         </div>
+
+        {/* Chat with AI */}
+        <div
+          className='relative flex items-center justify-center'
+          onMouseEnter={() => handleMouseEnter('Chat with AI')}
+          onMouseLeave={handleMouseLeave}
+        >
+          <span onClick={(e) => {
+            setOutletState('aiChat')
+            getAIChat(e)
+          }} className='cursor-pointer hover:scale-110 transition-all duration-150 ease-in flex text-sm items-center'>
+            <svg
+            onClick={() => navigate('/bolum-mentor')}
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="lucide lucide-brain-icon lucide-brain cursor-pointer"
+          >
+            <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" />
+            <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" />
+            <path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" />
+            <path d="M17.599 6.5a3 3 0 0 0 .399-1.375" />
+            <path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" />
+            <path d="M3.477 10.896a4 4 0 0 1 .585-.396" />
+            <path d="M19.938 10.5a4 4 0 0 1 .585.396" />
+            <path d="M6 18a4 4 0 0 1-1.967-.516" />
+            <path d="M19.967 17.484A4 4 0 0 1 18 18" />
+          </svg>
+          </span>
+
+          {tooltip === 'Chat with AI' && (
+            <div className='absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-purple-950 text-white text-xs px-2 py-1 rounded shadow-md z-10 whitespace-nowrap'>
+              Chat with AI
+            </div>
+          )}
+        </div>
       </div>
 
       <div className='w-full flex justify-center'>

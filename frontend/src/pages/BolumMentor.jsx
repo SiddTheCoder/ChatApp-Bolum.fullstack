@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { Home } from 'lucide-react'
-import {useNavigate , Link} from 'react-router-dom';
+import { Home } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 
 const backgroundImages = [
-  'https://images.unsplash.com/photo-1506744038136-46273834b3fb', // nature
-  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e', // sea
-  'https://images.unsplash.com/photo-1518837695005-2083093ee35b', // purple flower
-  'https://images.unsplash.com/photo-1531746790731-6c087fecd65a', // calm mountain
+  'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
+  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e',
+  'https://images.unsplash.com/photo-1518837695005-2083093ee35b',
+  'https://images.unsplash.com/photo-1531746790731-6c087fecd65a',
 ];
 
 function BolumMentor() {
@@ -17,55 +17,103 @@ function BolumMentor() {
   const [loading, setLoading] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
   const chatRef = useRef(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const typingSound = useRef(new Audio('https://www.soundjay.com/button/sounds/button-16.mp3'));
+
+  const playTypingSound = () => {
+    if (!typingSound.current.paused) return;
+    typingSound.current.play().catch(() => {});
+  };
+
+  const stopTypingSound = () => {
+    typingSound.current.pause();
+    typingSound.current.currentTime = 0;
+  };
+
+  const animatedDisplay = async (text, callback) => {
+    const words = text.split(' ');
+    let rendered = '';
+    setIsTyping(true);
+
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i];
+      const mode = Math.random() < 0.5 ? 'letter' : 'word';
+
+      if (mode === 'word') {
+        rendered += word + ' ';
+        callback(rendered);
+        await new Promise(res => setTimeout(res, 150));
+      } else {
+        for (let j = 0; j < word.length; j++) {
+          rendered += word[j];
+          callback(rendered + ' ');
+          playTypingSound();
+          await new Promise(res => setTimeout(res, 30));
+        }
+        rendered += ' ';
+        callback(rendered);
+        await new Promise(res => setTimeout(res, 100));
+      }
+    }
+
+    setIsTyping(false);
+    stopTypingSound();
+  };
 
   const sendMessage = async () => {
     if (!userInput.trim()) return;
-  
+
     const userMessage = { role: 'user', content: userInput };
     const updatedHistory = [...chatHistory, userMessage];
     setChatHistory(updatedHistory);
     setUserInput('');
     setLoading(true);
-  
+
     try {
-      const res = await axios.post('https://chatapp-bolum-backend.onrender.com/api/ai/chat', {
-        message: userInput,
-        history: updatedHistory, // send updated history here
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-        timeout: 10000,
+      const res = await axios.post(
+        'https://chatapp-bolum-backend.onrender.com/api/ai/chat',
+        { message: userInput, history: updatedHistory },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+          timeout: 10000,
+        }
+      );
+
+      const responseText = res.data.reply;
+      let partialContent = '';
+      setChatHistory(prev => [...prev, { role: 'assistant', content: '' }]);
+
+      await animatedDisplay(responseText, (current) => {
+        partialContent = current;
+        setChatHistory(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = { role: 'assistant', content: current };
+          return updated;
+        });
       });
-  
-      const botMessage = { role: 'assistant', content: res.data.reply };
-      setChatHistory((prev) => [...prev, botMessage]);
     } catch (err) {
       const fallback = err?.response?.status === 429
         ? 'Quota exceeded. Try again later.'
         : 'Sorry, something went wrong.';
-  
-      setChatHistory((prev) => [...prev, { role: 'assistant', content: fallback }]);
+
+      setChatHistory(prev => [...prev, { role: 'assistant', content: fallback }]);
     } finally {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     chatRef.current?.scrollTo({
       top: chatRef.current.scrollHeight,
       behavior: 'smooth',
     });
-  }, [chatHistory, loading]);
+  }, [chatHistory, loading, isTyping]);
 
-  // Background image slideshow logic
   useEffect(() => {
     const interval = setInterval(() => {
-      setBgIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
-    }, 8000); // Change every 8 seconds
-
+      setBgIndex(prevIndex => (prevIndex + 1) % backgroundImages.length);
+    }, 8000);
     return () => clearInterval(interval);
   }, []);
 
@@ -77,7 +125,7 @@ function BolumMentor() {
           Home
         </Link>
       </div>
-      {/* Background slideshow */}
+
       {backgroundImages.map((url, index) => (
         <div
           key={index}
@@ -93,7 +141,6 @@ function BolumMentor() {
         />
       ))}
 
-      {/* Chat container */}
       <div className="relative z-10 w-[80vw] min-h-[90vh] max-w-4xl bg-white bg-opacity-90 text-gray-800 rounded-2xl shadow-xl p-6 flex flex-col">
         <h1 className="sticky top-0 text-3xl font-bold text-purple-700 mb-4 text-center">🧠 Bolum AI Mentor</h1>
 
@@ -104,22 +151,22 @@ function BolumMentor() {
           {chatHistory.map((msg, idx) => (
             <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div
-                className={`max-w-[75%] px-4 py-2 rounded-lg text-sm leading-relaxed ${
+                className={`max-w-[75%] px-4 py-2 rounded-lg text-sm leading-relaxed whitespace-pre-wrap ${
                   msg.role === 'user'
                     ? 'bg-purple-600 text-white rounded-br-none'
                     : 'bg-white text-gray-800 border border-purple-200 rounded-bl-none'
                 }`}
               >
                 {msg.content}
+                {idx === chatHistory.length - 1 && isTyping && msg.role === 'assistant' && <span className="animate-pulse">|</span>}
               </div>
             </div>
           ))}
-          {loading && (
-            <div className="text-sm text-purple-400">AI is typing<span className="animate-pulse">...</span></div>
+          {loading && !isTyping && (
+            <div className="text-sm text-purple-400">AI is preparing response<span className="animate-pulse">...</span></div>
           )}
         </div>
 
-        {/* Input area */}
         <div className="mt-4 flex gap-2">
           <input
             type="text"
@@ -131,9 +178,9 @@ function BolumMentor() {
           />
           <button
             onClick={sendMessage}
-            disabled={loading}
+            disabled={loading || isTyping}
             className={`bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg transition ${
-              loading ? 'opacity-50 cursor-not-allowed' : ''
+              (loading || isTyping) ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
             Send
