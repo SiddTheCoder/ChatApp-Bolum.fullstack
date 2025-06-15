@@ -109,7 +109,7 @@ function Lander() {
               'Bolum', 1000,
               'Chat Freely.', 1000,
               'Bolum', 1000,
-              'Chat with AI.', 3000,
+              'Chat with AI - Mentor', 3000,
               'Connect Instantly.', 1000,
               'Bolum', 1000,
             ]}
