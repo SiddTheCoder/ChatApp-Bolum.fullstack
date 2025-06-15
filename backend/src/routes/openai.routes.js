@@ -1,22 +1,16 @@
 import express from 'express';
-import OpenAI from 'openai';
 import dotenv from 'dotenv';
+import OpenAI from 'openai';
 
 dotenv.config();
 const router = express.Router();
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: 'https://openrouter.ai/api/v1',
 });
 
 router.post('/chat', async (req, res) => {
-
-  if (!process.env.OPENAI_API_KEY) {
-    return res.status(500).json({ error: 'OpenAI API key is not configured' });
-  }
-
-  console.log('OpenAI API Key:', process.env.OPENAI_API_KEY);
-  
   const { message } = req.body;
 
   if (!message || message.trim() === '') {
@@ -25,7 +19,7 @@ router.post('/chat', async (req, res) => {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'mistralai/mixtral-8x7b', // or try 'openai/gpt-3.5-turbo' / 'anthropic/claude-3-haiku'
       messages: [
         { role: 'system', content: 'You are a helpful and empathetic mental health assistant.' },
         { role: 'user', content: message },
@@ -35,7 +29,7 @@ router.post('/chat', async (req, res) => {
     const reply = completion.choices[0].message.content;
     res.status(200).json({ reply });
   } catch (error) {
-    console.error('OpenAI Error:', error.message);
+    console.error('OpenRouter Error:', error.message);
     res.status(500).json({ error: 'Something went wrong with AI response.' });
   }
 });
