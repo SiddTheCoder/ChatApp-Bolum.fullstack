@@ -105,7 +105,14 @@ function Lander() {
   {/* Your content */}
   <h1 className="relative z-10 text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-purple-300 via-white to-purple-400 text-transparent bg-clip-text animate-pulse">
     <TypeAnimation
-      sequence={['Bolum', 1000, 'Chat Freely.', 1000, 'Bolum', 1000]}
+            sequence={[
+              'Bolum', 1000,
+              'Chat Freely.', 1000,
+              'Bolum', 1000,
+              'Chat with AI.', 3000,
+              'Connect Instantly.', 1000,
+              'Bolum', 1000,
+            ]}
       speed={50}
       repeat={Infinity}
     />
