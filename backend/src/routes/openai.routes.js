@@ -30,7 +30,7 @@ router.post('/chat', async (req, res) => {
     res.status(200).json({ reply });
   } catch (error) {
     console.error('OpenRouter Error:', error.message);
-    res.status(500).json({ error: 'Something went wrong with AI response.' });
+    res.status(500).json({ error: 'Something went wrong with AI OPENROUTER response.' });
   }
 });
 
