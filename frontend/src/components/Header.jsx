@@ -17,6 +17,8 @@ function Header() {
   const [userGeneratedTextImg, setUserGeneratedTextImg] = useState(null)
   const [showNotifications,setShowNotification] = useState(false)
 
+  const [isAIChatBotHovered, setIsAIChatBotHovered] = useState(false)
+
   // FORM CONTEXT API HOOK
   const { socket } = useSocket()
   // FROM HOOK
@@ -98,7 +100,8 @@ function Header() {
     // Clean up
     return () => clearTimeout(timeout);
   }
-}, [notificationCount]);
+  }, [notificationCount]);
+
 
 
 
@@ -106,8 +109,46 @@ function Header() {
     <header className='h-12 bg-white/80 text-black w-full flex justify-between items-center pl-10 px-2 border-b-1 border-black'>
       <div onClick={() => navigate('/home')} className='text-purple-950 flex gap-2 items-center justify-center cursor-pointer opacity-[0.8]  py-1 px-1 rounded font-exile text-3xl'><img src={BolumLogo} alt="" width={40} />BOLUM</div>
 
+      
+
       <div className='flex justify-around items-center gap-2'>
-        <div onClick={() => navigate('/settings')}><Settings className='hover:animate-spin cursor-pointer hover:scale-[1.2] transition-all duration-150 ease-in' /></div>
+
+      <div className='group relative flex items-center justify-center gap-2 bg-white/80 rounded-md px-2 py-1 hover:bg-white/90 transition-all duration-150 ease-in hover:shadow-md hover:scale-[1.09]'>
+          <svg
+            onClick={() => navigate('/bolum-mentor')}
+            onMouseEnter={() => setIsAIChatBotHovered(true)}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="lucide lucide-brain-icon lucide-brain cursor-pointer"
+          >
+            <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" />
+            <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" />
+            <path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" />
+            <path d="M17.599 6.5a3 3 0 0 0 .399-1.375" />
+            <path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" />
+            <path d="M3.477 10.896a4 4 0 0 1 .585-.396" />
+            <path d="M19.938 10.5a4 4 0 0 1 .585.396" />
+            <path d="M6 18a4 4 0 0 1-1.967-.516" />
+            <path d="M19.967 17.484A4 4 0 0 1 18 18" />
+          </svg>
+
+          <div className="absolute -bottom-6 text-xs bg-purple-700 text-white px-2 py-1 rounded shadow-md hidden group-hover:block w-20 text-center transition-opacity duration-200 z-50">
+            AI Mentor
+          </div>
+          {!isAIChatBotHovered && (<div className='h-3 w-3 rounded-full bg-red-700 absolute bottom-5 left-[25px] animate-ping text-sm '></div>)}
+        </div>
+
+
+        <div onClick={() => navigate('/settings')}>
+          <Settings className='hover:animate-spin cursor-pointer hover:scale-[1.2] transition-all duration-150 ease-in' />
+        </div>
         <div className='relative' onClick={toggleShowNotifications}>
           <Bell className='cursor-pointer hover:scale-[1.2] hover:z-10 transition-all duration-150 ease-in ml-2 mr-2' />
           {notificationCount > 0 && (

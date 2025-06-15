@@ -11,6 +11,7 @@ import RandomPageError from './pages/RandomPageError'
 import SettingLayout from './pages/SettingLayout';
 import ProfileSettings from './pages/setting-pages/ProfileSettings';
 import AccountSettings from './pages/setting-pages/AccountSettings';
+import BolumMentor from './pages/BolumMentor';
 
 function App() {
   return (
@@ -27,10 +28,14 @@ function App() {
             </Route>
         </Route>
         <Route path="/:username" element={<UserProfile />} />
+        
+        
+        {/* Settings Routes */}
         <Route path="/settings" element={<SettingLayout />}>
-        <Route path="profile" element={<ProfileSettings />} />
-        <Route path="account" element={<AccountSettings />} />
-      </Route>
+          <Route path="profile" element={<ProfileSettings />} />
+          <Route path="account" element={<AccountSettings />} />
+        </Route>
+        <Route path="/bolum-mentor" element={<BolumMentor />} />
         <Route path="*" element={<RandomPageError />} />
       </Routes>
     </BrowserRouter>

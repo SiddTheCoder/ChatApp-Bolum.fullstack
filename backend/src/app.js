@@ -29,7 +29,14 @@ app.use('/api/v1/user', userRoutes)
 app.use('/api/v1/notification', notificationRoutes)
 app.use('/api/v1/chatMessage', chatMessageRoutes)
 app.use('/api/v1/chat', chatRoutes)
-// app.use('/api/v1/openai',openaiChatRoutes)
+
+
+
+
+// Uncomment the following lines if you want to use OpenAI routes
+import aiRoutes from './routes/openai.routes.js';
+app.use('/api/ai', aiRoutes);
+
 
 
 app.get('/ping', (req, res) => {

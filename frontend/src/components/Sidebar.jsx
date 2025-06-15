@@ -5,6 +5,7 @@ import { useSocket } from '../context/SocketContext'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom';
 import { House, Archive } from 'lucide-react'
+import ToasterNotification from './semi-components/ToasterNotification'
 
 function Sidebar() {
   const navigate = useNavigate()
@@ -20,6 +21,12 @@ function Sidebar() {
   const [archivingChat, setArchivingChat] = useState(false);
   const [unArchivingChat, setUnArchivingChat] = useState(false);
   const [userChatLoading, setUserChatLoading] = useState(false);
+
+  const [showToast, setShowToast] = useState(false);
+
+  const triggerToast = () => {
+    setShowToast(true);
+  };
 
   const [tooltip, setTooltip] = useState(null);
   const timerRef = useRef(null);
@@ -74,7 +81,6 @@ function Sidebar() {
   }
 
   const archiveChat = async (chatId, e) => {
-    console.log('Archiving chat with ID:', chatId);
     if (!chatId) {
       console.error('No chat ID provided for archiving');
       return;
@@ -85,8 +91,6 @@ function Sidebar() {
       const response = await axios.post(`https://chatapp-bolum-backend.onrender.com/api/v1/chat/archive-chat?chatId=${chatId}`, {}, {
         withCredentials: true
       });
-      console.log('Archive response:', response.data);
-      // console.log('Chat archived successfully:', response.data);
       getUserFriendsWithTheirLatestMessages(); // Refresh friends list after archiving
       setOpenChatId(null) // close the dropdown after archiving
       setArchivingChat(false)
@@ -249,11 +253,19 @@ function Sidebar() {
                   <div className='h-22 my-2 w-36 bg-gray-300/90 rounded-md flex flex-col p-2 shadow-lg'>
                     <span
                       onClick={(e) => {
-                        console.log('Archiving chat with ID:', friend);
                         archiveChat(friend.lastMessage?.chat, e);
+                        if (!friend.lastMessage?.chat) {
+                          triggerToast();
+                          e.stopPropagation();
+                        }
                       }}
                       className='text-sm transition-all duration-150 ease-in bg-purple-200/10 hover:bg-purple-400/10 py-2 flex gap-1 items-center px-2 pt-1'>
-                      <Archive className={`${archivingChat ? 'animate-bounce' : ''}`} size={15} /> {archivingChat ? 'Archiving...' : 'Archive Chat'}
+                      <Archive  className={`${archivingChat ? 'animate-bounce' : ''}`} size={15} /> {archivingChat ? 'Archiving...' : 'Archive Chat'}
+                      <ToasterNotification
+                        message="Talk first to archive this chat"
+                        show={showToast}
+                        onClose={() => setShowToast(false)}
+                      />
                     </span>
                     <div className='w-full flex justify-center'><span className='w-[95%] border-b-2 my-1 border-b-blue-900'></span></div>
                     <span className='bg-purple-200/10 hover:bg-purple-400/10 transition-all duration-150 ease-in py-2 text-sm flex gap-1 items-center px-2 pt-1'><Trash size={15} /> Delete Chat</span>
