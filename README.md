@@ -44,10 +44,9 @@
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083975/Screenshot_95_aqnacq.jpg?_s=public-apps" width="300" alt="Screenshot 1"/>
-  <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083971/Screenshot_99_qfyglb.jpg?_s=public-apps" width="300" alt="Screenshot 2"
-    />
   <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083976/Screenshot_94_bidlmu.jpg?_s=public-apps" width="300" alt="Screenshot 3"/>
+  <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083975/Screenshot_95_aqnacq.jpg?_s=public-apps" width="300" alt="Screenshot 1"/>
+  <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083971/Screenshot_99_qfyglb.jpg?_s=public-apps" width="300" alt="Screenshot 2"/>
   <br/>
   <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083972/Screenshot_97_pxc3lc.jpg?_s=public-apps" width="300" alt="Screenshot 4"/>
   <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083975/Screenshot_96_fujlhu.jpg?_s=public-apps" width="300" alt="Screenshot 5"/>
