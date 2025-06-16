@@ -41,6 +41,24 @@
 - Real-time updates and clean navigation
 
 ---
+## 📸 Screenshots
+
+<p align="center">
+  <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083975/Screenshot_95_aqnacq.jpg?_s=public-apps" width="300" alt="Screenshot 1"/>
+  <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083971/Screenshot_99_qfyglb.jpg?_s=public-apps" width="300" alt="Screenshot 2"
+    />
+  <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083976/Screenshot_94_bidlmu.jpg?_s=public-apps" width="300" alt="Screenshot 3"/>
+  <br/>
+  <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083972/Screenshot_97_pxc3lc.jpg?_s=public-apps" width="300" alt="Screenshot 4"/>
+  <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083975/Screenshot_96_fujlhu.jpg?_s=public-apps" width="300" alt="Screenshot 5"/>
+  <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083975/Screenshot_93_kawhvs.jpg?_s=public-apps" width="300" alt="Screenshot 6"/>
+  <br/>
+  <img src="https://res.cloudinary.com/dizjttfx3/image/upload/fl_preserve_transparency/v1750083973/Screenshot_92_e6qwnh.jpg?_s=public-apps" width="300" alt="Screenshot 7"/>
+</p>
+
+---
+
+
 
 ## 🛠️ Tech Stack
 
