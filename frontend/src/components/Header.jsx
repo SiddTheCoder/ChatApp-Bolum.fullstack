@@ -106,8 +106,8 @@ function Header() {
 
 
   return (
-    <header className='h-12 bg-white/80 text-black w-full flex justify-between items-center pl-10 px-2 border-b-1 border-black'>
-      <div onClick={() => navigate('/home')} className='text-purple-950 flex gap-2 items-center justify-center cursor-pointer opacity-[0.8]  py-1 px-1 rounded font-exile text-3xl'><img src={BolumLogo} alt="" width={40} />BOLUM</div>
+    <header className='h-12 bg-white/80 text-black w-full flex justify-between items-center pl-10 sm:px-2  border-b-1 border-black'>
+      <div onClick={() => navigate('/home')} className='text-purple-950 flex gap-1 items-center justify-center cursor-pointer opacity-[0.8]  py-1 sm:px-1 rounded font-exile text-2xl sm:text-3xl'><img src={BolumLogo} alt="" width={40} />BOLUM</div>
 
       
 
@@ -165,7 +165,7 @@ function Header() {
         <div
           onClick={() => navigate(`/${currentUser?.username}`)}
           className='flex justify-between items-center gap-2 pr-2 cursor-pointer bg-purple-600/30 hover:bg-purple-600 py-1 px-3 rounded transition-all duration-100 ease-in'>
-          <div className='flex flex-col items-center justify-center h-6 text-sm'>
+          <div className='hidden sm:flex flex-col items-center justify-center h-6 text-sm'>
             <span className='text-sm'>{currentUser?.fullname}</span>
           </div>
           <div className='h-8 w-8 rounded-full bg-white overflow-hidden object-cover flex justify-center items-center'>

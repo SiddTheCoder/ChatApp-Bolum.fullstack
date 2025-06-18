@@ -144,7 +144,7 @@ function ChatApp({ }) {
   
   
   return (
-    <div className='h-[94vh] flex flex-row-reverse gap-1'>
+    <div className='h-full sm:h-[94vh] flex flex-row-reverse gap-1'>
 
       {/* User Infro Model */}
       {userInfoModelStatus && (

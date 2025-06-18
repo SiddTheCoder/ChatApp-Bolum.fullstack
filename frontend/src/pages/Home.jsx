@@ -13,8 +13,9 @@ function Home() {
   return (
     <div className='h-screen w-screen flex flex-col items-center  bg-slate-100 overflow-hidden '>
       <Header />
-      <div className='w-full h-full flex gap-1'>
-        <div className='min-w-[250px] w-[450px] h-full'>
+
+      <div className='w-full h-full flex sm:flex-row flex-col gap-1'>
+        <div className='min-w-[250px] sm:w-[450px] sm:h-full h-auto'>
           <Sidebar />
         </div>
 

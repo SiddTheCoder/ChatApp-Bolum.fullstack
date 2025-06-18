@@ -141,7 +141,7 @@ function Sidebar() {
 
   return (
     <div className='bg-slate-200 w-full h-full flex flex-col p-1 gap-1'>
-      <div className='h-8 w-full bg-slate-300/40 py-2 px-5 flex justify-start items-center gap-2'>
+      <div className='h-8 w-full bg-slate-300/40 py-2 px-5 hidden sm:flex justify-start items-center gap-2'>
         {/* Home Icon */}
         <div
           className='relative flex items-center justify-center'
@@ -245,26 +245,27 @@ function Sidebar() {
         </div>
       </div>
 
-      <div className='w-full flex justify-center'>
+      <div className='w-full hidden sm:flex justify-center'>
         <div className='border-b-2 border-slate-400 w-[90%]'></div>
       </div>
 
       {outletState === 'homeChats' && (
-        <div className='h-full w-full bg-transparent p-2 flex gap-3 flex-col overflow-y-scroll custom-scrollbar custom-scrollbar-hover'>
+        <div className='sm:h-full h-auto w-full p-2 flex flex-row gap-5 sm:gap-3 sm:flex-col sm:overflow-y-scroll overflow-x-scroll custom-scrollbar custom-scrollbar-hover bg-transparent'>
           {!userChatLoading ? [...friends].reverse().map((friend) => (
             <div
               onClick={() => navigate(`/home/chat/${friend?._id}`)}
               key={friend._id}
               onMouseEnter={() => handleMouseEnter(friend.fullname)}
               onMouseLeave={handleMouseLeave}
-              className={`h-12 w-full bg-white/30 rounded-md flex gap-1 cursor-pointer relative hover:bg-white/100 transition-all duration-150 ease-in-out`}
+              className={`h-12 w- bg-white/30 rounded-md flex gap-1 cursor-pointer relative hover:bg-white/100 transition-all duration-150 ease-in-out`}
             >
-              <div className='h-full w-[30%] flex justify-center items-center'>
+              <div className='h-full w-auto flex flex-col justify-center items-center'>
                 <div className='h-10 w-10 rounded-full bg-purple-900 cursor-pointer bg-cover overflow-hidden'>
-                  <img src={friend?.avatar} alt="" />
+                  <img src={friend?.avatar} alt={friend?.fullname} />
                 </div>
+                <span className='block sm:hidden text-[10px]'>{friend?.fullname.split(' ')[0]}</span>
               </div>
-              <div className='w-full h-full flex flex-col items-start justify-center'>
+              <div className='w-full h-full hidden sm:flex flex-col items-start justify-center'>
                 <h1 className='text-[13.5px] font-semibold'>{friend.fullname}</h1>
                 <div className='text-[12px] font-light flex gap-1 items-center'>
                   <span><CheckCheck size={15} /></span>
@@ -273,7 +274,7 @@ function Sidebar() {
                   </span>
                 </div>
               </div>
-              <div className='absolute bottom-1 right-2'>
+              <div className='hidden sm:block absolute bottom-1 right-2'>
                 <span className='text-[12px] font-light text-gray-500'>
                   {friend?.lastMessage?.createdAt ? new Date(friend.lastMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                 </span>
@@ -281,7 +282,7 @@ function Sidebar() {
               {tooltip === friend.fullname && (
                 <div
                   onClick={(e) => handleChatOptionClick(friend._id, e)}
-                  className='absolute top-1 right-2'>
+                  className='hidden sm:block absolute top-1 right-2'>
                   <span className='cursor-pointer hover:scale-110 transition-all duration-150 ease-in flex text-sm items-center'> <ChevronDown size={30} className='bg-slate-300/50 rounded-full p-1' />
                   </span>
                 </div>
@@ -431,6 +432,10 @@ function Sidebar() {
           )}
         </div>
       )}
+
+       <div className='w-full sm:hidden flex justify-center'>
+        <div className='border-b-2 border-slate-400 w-[90%]'></div>
+      </div>
 
     </div>
   )

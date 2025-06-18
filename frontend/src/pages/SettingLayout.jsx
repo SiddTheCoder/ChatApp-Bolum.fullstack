@@ -15,14 +15,14 @@ function SettingLayout() {
   return (
     <div className="flex min-h-screen">
       {/* Fixed Sidebar */}
-      <aside className="w-64 bg-gray-100 p-4">
+      <aside className="sm:w-64 bg-gray-100 p-4">
         <nav className="flex flex-col gap-2 bg-slate-300/40 h-full">
           <NavLink
             to="profile"
             className={({ isActive }) =>
               isActive
-                ? 'text-white bg-purple-500/80 h-10 flex pl-1 items-center'
-                : 'text-gray-700 bg-purple-300/20 hover:bg-purple-300/90 h-10 flex pl-1 items-center'
+                ? 'text-white text-sm bg-purple-500/80 h-10 flex pl-1 items-center'
+                : 'text-gray-700 text-sm  bg-purple-300/20 hover:bg-purple-300/90 h-10 flex pl-1 items-center'
             }
           >
             Profile Settings
@@ -31,8 +31,8 @@ function SettingLayout() {
             to="account"
             className={({ isActive }) =>
               isActive
-                ? 'text-white bg-purple-500/80 h-10 flex pl-1 items-center'
-                : 'text-gray-700 bg-purple-300/20 hover:bg-purple-300/90 h-10 flex pl-1 items-center'
+                ? 'text-white text-sm bg-purple-500/80 h-10 flex pl-1 items-center'
+                : 'text text-sm gray-700 bg-purple-300/20 hover:bg-purple-300/90 h-10 flex pl-1 items-center'
             }
           >
             Account Settings

@@ -74,7 +74,7 @@ function ShowNotifications({ closeModel, isOpen }) {
   
 
   return (
-    <div className={ isOpen ? `z-50 overflow-y-scroll h-[500px] w-[350px] bg-white  outline-1 outline-gray-300 shadow-sm rounded-md flex flex-col gap-1 absolute top-7 right-5 p-2` : 'hidden'}>
+    <div className={ isOpen ? `z-50 overflow-y-scroll  sm:h-[500px] w-[350px] bg-white  outline-1 outline-gray-300 shadow-sm rounded-md flex flex-col gap-1 absolute top-7 sm:right-5 right-0 p-2 text-sm` : 'hidden'}>
      
       {[...notifications]
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // newest first
@@ -83,7 +83,7 @@ function ShowNotifications({ closeModel, isOpen }) {
             return (
               <div
                 key={notification._id}
-                className={`w-full h-20 py-1 rounded-md flex justify-between gap-2 ${!notification?.seen ? "bg-purple-700 text-white " : "bg-slate-300 text-black"} `}
+                className={`w-full py-1 rounded-md flex justify-between gap-0 ${!notification?.seen ? "bg-purple-700 text-white " : "bg-slate-300 text-black"} `}
               >
                 <div className='h-full w-[30%] flex justify-center items-center ml-3'>
                   <div className="relative h-12 w-12">

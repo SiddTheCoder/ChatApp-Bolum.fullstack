@@ -31,9 +31,9 @@ function AccountSettings() {
   return (
     <>
       <div className=''><PageBacker className={'ml-5'} /></div>
-      <div className='h-[95vh] w-full bg-slate-400/20 flex'>
+      <div className='h-[95vh] w-full bg-slate-400/20 flex sm:flex-row flex-col'>
         
-        <div className='h-full w-[60%] flex flex-col py-7 px-2'>
+        <div className='h-full sm:w-[60%] w-full flex flex-col py-7 px-2'>
           <div className='border-b-2 border-green-600'><span className='text-green-800 text-xl font-semibold'>Safe Zone</span>
           </div>
           <div className='flex flex-col h-full relative'>
@@ -42,9 +42,10 @@ function AccountSettings() {
             <div className='flex bg-slate-300/20 hover:bg-slate-400/30 h-10 items-center px-1 hover:px-5 gap-1 hover:gap-3 transition-all duration-150 ease-in cursor-pointer'><UserRoundX size={16} />Blocked Freinds</div>
             <div className='flex bg-slate-300/20 hover:bg-slate-400/30 h-10 items-center px-1 hover:px-5 gap-1 hover:gap-3 transition-all duration-150 ease-in cursor-pointer'><FileUser size={16} />Account Status</div>
             <div className='flex bg-slate-300/20 hover:bg-slate-400/30 h-10 items-center px-1 hover:px-5 gap-1 hover:gap-3 transition-all duration-150 ease-in cursor-pointer'><UserLock size={16} />Account Privacy Policy</div>
+            
             <div
               onClick={() => setShowConfirm('logout')}
-              className='flex absolute bottom-0 bg-slate-300/30 hover:bg-purple-400/30 h-10 items-center px-1 hover:px-5 gap-1 hover:gap-3 rounded-3xl transition-all duration-150 ease-in cursor-pointer'>
+              className='flex absolute sm:bottom-0 -bottom-0 sm:bg-slate-300/30 bg-slate-300/70 hover:bg-purple-400/30 h-10 items-center px-1 hover:px-5 gap-1 hover:gap-3 rounded-3xl transition-all duration-150 ease-in cursor-pointer'>
               <UserRoundMinus size={16} />Logout
             </div>
             {showConfirm === 'logout' && (
@@ -57,10 +58,10 @@ function AccountSettings() {
           </div>
         </div>
 
-        <div className='h-full w-5 flex justify-center items-center'><div className='h-[90%] w-2 border-l-4 border-purple-500 rounded-2xl'></div></div>
+        <div className='sm:h-full w-5 flex justify-center items-center'><div className='h-[90%] w-2 border-l-4 border-purple-500 rounded-2xl'></div></div>
 
           {/* ------------------------------------------------------ */}
-        <div className='h-full w-[40%] flex flex-col py-7 px-2'>
+        <div className='h-full sm:w-[40%] flex flex-col py-7 px-2'>
           <div className='border-b-2 border-red-600'><span className='text-red-800 text-xl font-semibold'>Danger Zone</span>
           </div>
           <div className='flex flex-col h-full relative'>
@@ -69,7 +70,7 @@ function AccountSettings() {
                 Deleting your account is permanent and will result in the loss of all your account data, including messages, friends, and settings. This action cannot be undone.
               </span>
               <div className='text-right text-sm'>
-                <span onClick={() => setIsDeleteAccountProceed(prev => !prev)} className='hover:underline bg-slate-600/10 px-5 py-2 cursor-pointer rounded-md'>{ isDeleteAccountProceed ? 'Dont Want to Proceed ?' : 'Want to Proceed ?'}</span>
+                <span onClick={() => setIsDeleteAccountProceed(prev => !prev)} className='hover:underline relative top-3 bg-slate-600/10 px-5 py-2 cursor-pointer rounded-md'>{ isDeleteAccountProceed ? 'Dont Want to Proceed ?' : 'Want to Proceed ?'}</span>
               </div>
             </div>
             {isDeleteAccountProceed && <div onClick={() => setShowConfirm('deleteAccount')} className='flex absolute bottom-0 bg-red-300/40 px-4 hover:bg-red-700 hover:text-white h-10 items-center hover:px-5 gap-1 hover:gap-3 rounded-3xl transition-all duration-150 ease-in cursor-pointer'><UserX size={16} />Delete Account</div>}

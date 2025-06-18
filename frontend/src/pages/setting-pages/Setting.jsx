@@ -59,7 +59,7 @@ function Setting({handleOutletState}) {
             onChange={(e) => setSearchedText(e.target.value)}
             name="userSearch"
             id="userSearch"
-            className='h-10 bg-white p-2 rounded-md border w-96 active:w-[400px] transition-all duration-150 ease-in'
+            className='h-10 bg-white p-2 rounded-md border sm:w-96  sm:active:w-[400px] transition-all duration-150 ease-in'
           />
           <button type='submit'>
             <Search size={25} className='absolute right-3 top-2 hover:scale-110 cursor-pointer transition-all duration-75 ease-in bg-slate-300 rounded-full p-1' />

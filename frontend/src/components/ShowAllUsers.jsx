@@ -134,7 +134,7 @@ function ShowAllUsers() {
         {!loading ? users?.map((user) => (
           <div
             key={user._id}
-            className="w-72 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-transform duration-300 hover:scale-[1.02] p-5 flex flex-col items-center space-y-3"
+            className="min-w-50 sm:w-72 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-transform duration-300 hover:scale-[1.02] p-5 flex flex-col items-center space-y-3"
           >
             <div className="w-24 h-24 rounded-full overflow-hidden shadow-sm">
               <img
