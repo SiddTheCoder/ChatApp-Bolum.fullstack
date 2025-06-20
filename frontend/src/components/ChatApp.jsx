@@ -1,7 +1,7 @@
 import React, { useEffect, useState , useRef} from 'react'
 import {
   EllipsisVertical, Search, Lock, Plus, Send, X, CircleUserRound, UserX,
-  Trash,
+  Trash, Video,
   Users
  } from 'lucide-react'
 import { useParams } from 'react-router-dom'
@@ -10,6 +10,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useSocket } from '../context/SocketContext'
 import MessageBubble from './MessageBubble'
 import { useNavigate } from 'react-router-dom'
+import VideoCall from './VideoCall';
 
 function ChatApp({ }) {
   const navigate = useNavigate()
@@ -21,6 +22,7 @@ function ChatApp({ }) {
   const messagesEndRef = useRef(null);
   const [messageCollection, setMessageCollection] = useState([])
   const [userInfoModelStatus,setUserInfoModelStatus] = useState(false)
+  const [isVideoCallStatusOpened,setIsVideoCallStatusOpened] = useState(false)
 
   // getting iser by id 
   const getUserById = async () => {
@@ -207,6 +209,12 @@ function ChatApp({ }) {
         </div>
         {/* right side */}
         <div className='flex gap-2 items-center'>
+          
+          <span
+            onClick={() => setIsVideoCallStatusOpened(prev => !prev)}
+            className='hover:bg-white/90 hover:text-black transition-all duration-300 ease-out cursor-pointer p-2 rounded-full'><Video />
+          </span>
+          {isVideoCallStatusOpened && (<VideoCall />)}
           <span
             className='hover:bg-white/90 hover:text-black transition-all duration-300 ease-out cursor-pointer p-2 rounded-full'><Search size={20} />
           </span>
