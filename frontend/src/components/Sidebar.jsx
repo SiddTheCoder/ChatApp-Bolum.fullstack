@@ -250,7 +250,7 @@ function Sidebar() {
       </div>
 
       {outletState === 'homeChats' && (
-        <div className='sm:h-full h-auto w-full p-2 flex flex-row gap-5 sm:gap-3 sm:flex-col sm:overflow-y-scroll overflow-x-scroll custom-scrollbar custom-scrollbar-hover bg-transparent'>
+        <div className='sm:h-full h-auto w-full p-2 flex flex-row gap-7 sm:gap-3 sm:flex-col sm:overflow-y-scroll overflow-x-scroll custom-scrollbar custom-scrollbar-hover bg-transparent'>
           {!userChatLoading ? [...friends].reverse().map((friend) => (
             <div
               onClick={() => navigate(`/home/chat/${friend?._id}`)}
@@ -433,9 +433,7 @@ function Sidebar() {
         </div>
       )}
 
-       <div className='w-full sm:hidden flex justify-center'>
-        <div className='border-b-2 border-slate-400 w-[90%]'></div>
-      </div>
+      
 
     </div>
   )

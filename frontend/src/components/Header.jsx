@@ -107,11 +107,11 @@ function Header() {
 
   return (
     <header className='h-12 bg-white/80 text-black w-full flex justify-between items-center pl-10 sm:px-2  border-b-1 border-black'>
-      <div onClick={() => navigate('/home')} className='text-purple-950 flex gap-1 items-center justify-center cursor-pointer opacity-[0.8]  py-1 sm:px-1 rounded font-exile text-2xl sm:text-3xl'><img src={BolumLogo} alt="" width={40} />BOLUM</div>
+      <div onClick={() => navigate('/home')} className='text-purple-950 flex gap-1 items-center justify-center cursor-pointer opacity-[0.8]  py-1 sm:px-1 rounded font-exile text-2xl sm:text-3xl relative -left-9 sm:-left-0 '><img src={BolumLogo} alt="" width={40} />BOLUM</div>
 
       
 
-      <div className='flex justify-around items-center gap-2'>
+      <div className='flex justify-around items-center sm:gap-2'>
 
       <div className='group relative flex items-center justify-center gap-2 bg-white/80 rounded-md px-2 py-1 hover:bg-white/90 transition-all duration-150 ease-in hover:shadow-md hover:scale-[1.09]'>
           <svg
