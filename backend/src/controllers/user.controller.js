@@ -421,7 +421,6 @@ const getUserFriendsWithLatestMessage = asyncHandler(async (req, res) => {
 });
 
 
-
 const updateUserCredentials = asyncHandler(async (req, res) => {
   const { username, email, oldPassword, newPassword, fullname, bio, socialHandles } = req.body;
 
