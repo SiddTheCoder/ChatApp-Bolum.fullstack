@@ -15,8 +15,8 @@ export default defineConfig({
       name: 'Bolum Chat App',
       short_name: 'Bolum',
       description: 'A real-time chat app with offline capability',
-      theme_color: '#5b21b6', // purple
-      background_color: '#ffffff',
+      theme_color: '#ffff', // purple
+      background_color: '#5b21b6',
       display: 'standalone',
       orientation: 'portrait',
       start_url: '/',
